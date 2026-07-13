@@ -59,7 +59,7 @@ export default function FleetPage() {
           src="/images/fleet-hero.png"
           alt="Mandy Express 2025 Mercedes-Benz Sprinter Extended High Roof on Highway 401 near Toronto"
           width={1500}
-          height={680}
+          height={540}
           priority
           className="fleet-hero-image"
         />
