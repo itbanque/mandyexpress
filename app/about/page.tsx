@@ -56,21 +56,22 @@ export default function AboutPage() {
     <main className="min-h-screen bg-white text-mandy-navy">
       <Header activeItem="About Us" />
 
-      <section className="container about-hero" aria-label="About Mandy Express">
+      <section className="about-hero" aria-label="About Mandy Express">
         <Image
-          src="/images/about-hero.png"
+          src="/images/fleet-hero.png"
           alt="Mandy Express Sprinter cargo van on the Highway 401 Toronto corridor"
-          width={1440}
-          height={560}
+          fill
           priority
+          sizes="(max-width: 1440px) 100vw, 1440px"
           className="about-hero-image"
         />
-        <div className="about-hero-gradient" />
-        <div className="about-hero-copy">
+        <div className="about-hero-gradient" aria-hidden="true" />
+        <div className="about-hero-content">
           <p className="about-eyebrow">About Mandy Express</p>
           <h1>
-            <span>More Than Cargo.</span>
-            <span>Your Trust, Our Priority.</span>
+            More Than Cargo.
+            <br />
+            Your Trust, Our Priority.
           </h1>
           <span className="about-orange-rule" />
           <p>
@@ -117,13 +118,15 @@ export default function AboutPage() {
           </p>
           <p>We don&apos;t just move cargo. We deliver peace of mind.</p>
         </div>
-        <Image
-          src="/images/about-story.png"
-          alt="Highway 401 signs for Montreal and Toronto"
-          width={760}
-          height={420}
-          className="about-story-image"
-        />
+        <div className="about-story-image-wrap">
+          <Image
+            src="/images/about-story.png"
+            alt="Highway 401 signs for Montreal and Toronto"
+            width={760}
+            height={420}
+            className="about-story-image"
+          />
+        </div>
       </section>
 
       <section className="container about-values-section" aria-labelledby="about-values">

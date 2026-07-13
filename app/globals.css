@@ -867,7 +867,10 @@ body {
 
 .about-hero {
   position: relative;
-  min-height: 560px;
+  width: 100%;
+  max-width: 1440px;
+  min-height: 540px;
+  margin: 0 auto;
   overflow: hidden;
   background: #ffffff;
 }
@@ -879,35 +882,39 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: right center;
+  object-position: center right;
 }
 
 .about-hero-gradient {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(
     90deg,
     #ffffff 0%,
-    rgba(255, 255, 255, 0.98) 31%,
-    rgba(255, 255, 255, 0.72) 44%,
-    rgba(255, 255, 255, 0.18) 60%,
-    rgba(255, 255, 255, 0) 75%
+    rgba(255, 255, 255, 0.99) 30%,
+    rgba(255, 255, 255, 0.9) 42%,
+    rgba(255, 255, 255, 0.48) 57%,
+    rgba(255, 255, 255, 0.06) 72%,
+    rgba(255, 255, 255, 0) 100%
   );
 }
 
-.about-hero-copy {
+.about-hero-content {
   position: relative;
   z-index: 2;
   display: grid;
-  max-width: 560px;
-  min-height: 560px;
   align-content: center;
   justify-items: start;
-  padding: 54px 48px 88px;
+  width: 48%;
+  max-width: 650px;
+  min-height: 540px;
+  padding: 58px 54px 70px;
 }
 
 .about-eyebrow,
-.about-hero-copy h1,
+.about-hero-content h1,
 .about-story-copy h2,
 .about-highlight h2,
 .about-section-heading h2,
@@ -924,12 +931,13 @@ body {
   line-height: 1;
 }
 
-.about-hero-copy h1 {
-  display: grid;
+.about-hero-content h1 {
   margin: 0;
   color: var(--navy);
-  font-size: clamp(43px, 4.6vw, 64px);
-  line-height: 1.02;
+  max-width: 660px;
+  font-size: clamp(44px, 4vw, 66px);
+  line-height: 0.96;
+  white-space: nowrap;
 }
 
 .about-orange-rule {
@@ -940,7 +948,7 @@ body {
   background: var(--orange);
 }
 
-.about-hero-copy p:not(.about-eyebrow),
+.about-hero-content p:not(.about-eyebrow),
 .about-story-copy p {
   margin: 0 0 18px;
   color: #24344f;
@@ -951,21 +959,22 @@ body {
 
 .about-highlight-card {
   position: relative;
-  z-index: 3;
+  z-index: 5;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: calc(100% - 96px);
   max-width: 1320px;
-  margin-top: -46px;
-  margin-bottom: 0;
+  margin: -34px auto 48px;
   border: 1px solid #e8edf3;
   border-radius: 8px;
   background: #ffffff;
-  box-shadow: 0 16px 38px rgba(6, 27, 54, 0.13);
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(7, 31, 61, 0.1);
 }
 
 .about-highlight,
 .about-value {
-  padding: 38px 28px;
+  padding: 24px 20px;
   text-align: center;
 }
 
@@ -975,7 +984,7 @@ body {
 
 .about-highlight svg,
 .about-value svg {
-  margin: 0 auto 20px;
+  margin: 0 auto 14px;
   color: var(--orange);
 }
 
@@ -998,31 +1007,43 @@ body {
 
 .about-story-section {
   display: grid;
-  grid-template-columns: minmax(360px, 0.9fr) minmax(0, 1.1fr);
-  gap: 52px;
+  grid-template-columns: 40% 60%;
+  gap: 34px;
   align-items: center;
-  padding: 44px 48px 26px;
+  width: calc(100% - 96px);
+  max-width: 1320px;
+  margin: 0 auto 42px;
+  padding: 0;
+}
+
+.about-story-copy {
+  padding-right: 12px;
 }
 
 .about-story-copy h2 {
   display: grid;
   margin: 0;
   color: var(--navy);
-  font-size: clamp(33px, 3.5vw, 48px);
+  font-size: clamp(31px, 3vw, 44px);
   line-height: 1.04;
+}
+
+.about-story-image-wrap {
+  min-height: 320px;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 .about-story-image {
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 360px;
-  border-radius: 7px;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 .about-values-section {
-  padding: 18px 40px 36px;
+  padding: 8px 40px 28px;
 }
 
 .about-section-heading {
@@ -1049,6 +1070,8 @@ body {
 .about-values-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 1320px;
+  margin: 0 auto;
   padding: 0 36px;
 }
 
@@ -1065,7 +1088,7 @@ body {
   margin-bottom: 14px;
   border-radius: 8px;
   background: #061b36;
-  padding: 28px 56px;
+  padding: 24px 56px;
   color: #ffffff;
 }
 
@@ -1891,13 +1914,19 @@ body {
   }
 
   .about-hero {
-    min-height: 500px;
+    min-height: 440px;
   }
 
-  .about-hero-copy {
-    max-width: 500px;
-    min-height: 500px;
-    padding: 42px 32px 78px;
+  .about-hero-content {
+    width: 56%;
+    max-width: 560px;
+    min-height: 440px;
+    padding: 42px 32px 46px;
+  }
+
+  .about-hero-image {
+    object-fit: cover;
+    object-position: center right;
   }
 
   .about-highlight-card,
@@ -1912,6 +1941,7 @@ body {
 
   .about-story-section {
     grid-template-columns: 1fr;
+    width: calc(100% - 64px);
     padding-right: 32px;
     padding-left: 32px;
   }
@@ -2238,30 +2268,40 @@ body {
   }
 
   .about-hero {
-    min-height: auto;
-  }
-
-  .about-hero-image {
-    position: relative;
-    height: 260px;
-    object-position: right center;
+    display: grid;
+    min-height: 0;
   }
 
   .about-hero-gradient {
-    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.95) 74%, rgba(255, 255, 255, 0) 100%);
+    display: none;
   }
 
-  .about-hero-copy {
+  .about-hero-content {
+    width: 100%;
+    max-width: none;
     min-height: 0;
     padding: 34px 24px 34px;
+    background: #ffffff;
   }
 
-  .about-hero-copy h1 {
+  .about-hero-content h1 {
     font-size: clamp(34px, 9vw, 44px);
+    white-space: normal;
+  }
+
+  .about-hero-image {
+    position: relative !important;
+    inset: auto !important;
+    order: 2;
+    width: 100%;
+    height: auto !important;
+    object-fit: contain;
+    object-position: center;
   }
 
   .about-highlight-card {
     grid-template-columns: 1fr;
+    width: 100%;
     margin-top: 0;
     border-radius: 0;
   }
@@ -2279,6 +2319,7 @@ body {
 
   .about-story-section {
     gap: 28px;
+    width: 100%;
     padding: 38px 24px 22px;
   }
 
@@ -2286,7 +2327,7 @@ body {
     font-size: clamp(31px, 8.5vw, 40px);
   }
 
-  .about-story-image {
+  .about-story-image-wrap {
     min-height: 230px;
   }
 
