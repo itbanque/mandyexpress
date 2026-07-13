@@ -1,0 +1,28 @@
+{
+  "name": "mandy-express-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.10",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3"
+  }
+}
