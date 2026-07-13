@@ -94,6 +94,15 @@ export default function ServicesPage() {
       <Header activeItem="Services" />
 
       <section className="container services-page-hero" aria-label="Mandy Express freight solutions">
+        <Image
+          src="/images/hero-large.png"
+          alt="2025 Mercedes-Benz Sprinter Extended High Roof cargo van with Mandy Express logo and slogan on Highway 401 near Toronto"
+          width={2048}
+          height={1116}
+          priority
+          className="services-hero-image"
+        />
+        <div className="services-hero-gradient" />
         <div className="services-hero-copy">
           <p className="services-eyebrow">Our Services</p>
           <h1>
@@ -109,16 +118,6 @@ export default function ServicesPage() {
             corridor.
           </p>
           <QuoteButton />
-        </div>
-        <div className="services-hero-media">
-          <Image
-            src="/images/services-hero-clean.png"
-            alt="2025 Mercedes-Benz Sprinter Extended High Roof cargo van with Mandy Express logo and slogan on Highway 401 near Toronto"
-            width={2400}
-            height={1080}
-            priority
-            className="services-hero-image"
-          />
         </div>
       </section>
 
