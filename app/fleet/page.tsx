@@ -54,16 +54,7 @@ export default function FleetPage() {
     <main className="min-h-screen bg-white text-mandy-navy">
       <Header activeItem="Fleet" />
 
-      <section className="container fleet-hero" aria-label="Mandy Express fleet">
-        <Image
-          src="/images/fleet-hero.png"
-          alt="Mandy Express 2025 Mercedes-Benz Sprinter Extended High Roof on Highway 401 near Toronto"
-          width={1500}
-          height={540}
-          priority
-          className="fleet-hero-image"
-        />
-        <div className="fleet-hero-overlay" />
+      <section className="fleet-hero" aria-label="Mandy Express fleet">
         <div className="fleet-hero-copy">
           <p className="fleet-eyebrow">Our Fleet</p>
           <h1>
@@ -76,9 +67,19 @@ export default function FleetPage() {
             Montreal-Toronto corridor.
           </p>
         </div>
+        <div className="fleet-hero-visual">
+          <Image
+            src="/images/fleet-hero.png"
+            alt="Mandy Express 2025 Mercedes-Benz Sprinter Extended High Roof on Highway 401 near Toronto"
+            width={1500}
+            height={540}
+            priority
+            className="fleet-hero-image"
+          />
+        </div>
       </section>
 
-      <section className="container fleet-section" aria-labelledby="cargo-van">
+      <section className="fleet-section" aria-labelledby="cargo-van">
         <div className="services-section-heading fleet-heading">
           <h2 id="cargo-van">Our Cargo Van</h2>
           <span />
