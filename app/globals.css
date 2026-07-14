@@ -953,6 +953,7 @@ body {
   width: calc(100% - 64px);
   max-width: 1260px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .about-highlights {
@@ -960,8 +961,9 @@ body {
   z-index: 4;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: -26px;
-  margin-bottom: 36px;
+  width: 100%;
+  margin: -26px 0 36px;
+  box-sizing: border-box;
   border: 1px solid #e5e9ef;
   border-radius: 6px;
   background: #ffffff;
@@ -1011,7 +1013,9 @@ body {
   grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
   gap: 32px;
   align-items: start;
-  margin-bottom: 34px;
+  width: 100%;
+  margin: 0 0 34px;
+  box-sizing: border-box;
 }
 
 .story-copy,
