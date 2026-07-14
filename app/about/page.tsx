@@ -85,49 +85,46 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="container about-highlight-card" aria-label="Mandy Express company highlights">
-        {highlights.map((highlight, index) => {
-          const Icon = highlight.icon;
-          return (
-            <article className={`about-highlight ${index > 0 ? "about-column-divider" : ""}`} key={highlight.title}>
-              <Icon size={48} strokeWidth={1.9} />
-              <h2>{highlight.title}</h2>
-              {highlight.lines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </article>
-          );
-        })}
-      </section>
+      <div className="about-page-width">
+        <section className="about-highlights" aria-label="Mandy Express company highlights">
+          {highlights.map((highlight) => {
+            const Icon = highlight.icon;
+            return (
+              <article className="about-highlight-item" key={highlight.title}>
+                <Icon size={38} strokeWidth={1.9} />
+                <h3>{highlight.title}</h3>
+                {highlight.lines.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </article>
+            );
+          })}
+        </section>
 
-      <section className="container about-story-section" aria-labelledby="about-story">
-        <div className="about-story-copy">
-          <p className="about-eyebrow">Our Story</p>
-          <h2 id="about-story">
-            <span>Built on Reliability.</span>
-            <span>Driven by Commitment.</span>
-          </h2>
-          <span className="about-orange-rule" />
-          <p>
-            Mandy Express was founded with a simple mission: to provide fast, reliable, and hassle-free freight service
-            between Montreal and Toronto.
-          </p>
-          <p>
-            With years of experience in the logistics industry, we understand what businesses need - consistent service,
-            clear communication, and a partner you can count on.
-          </p>
-          <p>We don&apos;t just move cargo. We deliver peace of mind.</p>
-        </div>
-        <div className="about-story-image-wrap">
-          <Image
-            src="/images/about-story.png"
-            alt="Highway 401 signs for Montreal and Toronto"
-            width={760}
-            height={420}
-            className="about-story-image"
-          />
-        </div>
-      </section>
+        <section className="about-story" aria-labelledby="about-story">
+          <div className="story-copy">
+            <p className="about-eyebrow eyebrow">Our Story</p>
+            <h2 id="about-story">
+              BUILT ON RELIABILITY.
+              <br />
+              DRIVEN BY COMMITMENT.
+            </h2>
+            <span className="about-orange-rule" />
+            <p>
+              Mandy Express was founded with a simple mission: to provide fast, reliable, and hassle-free freight service
+              between Montreal and Toronto.
+            </p>
+            <p>
+              With years of experience in the logistics industry, we understand what businesses need - consistent service,
+              clear communication, and a partner you can count on.
+            </p>
+            <p>We don&apos;t just move cargo. We deliver peace of mind.</p>
+          </div>
+          <div className="story-image-wrap">
+            <div className="story-image-needed" aria-hidden="true" />
+          </div>
+        </section>
+      </div>
 
       <section className="container about-values-section" aria-labelledby="about-values">
         <div className="about-section-heading">
