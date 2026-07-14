@@ -22,14 +22,14 @@ export default function Header({ activeItem = "Home" }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-white shadow-header">
       <div className="container header-inner">
-        <Link href="/" aria-label="Mandy Express home" className="shrink-0">
+        <Link href="/" aria-label="Mandy Express home" className="mobile-logo-link shrink-0">
           <Image
             src="/images/mandy-express-logo.png"
             alt="Mandy Express"
             width={236}
             height={90}
             priority
-            className="h-auto w-[205px] md:w-[236px]"
+            className="header-logo h-auto w-[205px] md:w-[236px]"
           />
         </Link>
 
@@ -47,7 +47,9 @@ export default function Header({ activeItem = "Home" }: HeaderProps) {
 
         <QuoteButton className="hidden lg:inline-flex" />
 
-        <button className="grid h-12 w-12 place-items-center rounded bg-mandy-orange text-white lg:hidden" aria-label="Open menu">
+        <QuoteButton className="mobile-header-quote lg:hidden" />
+
+        <button className="mobile-menu-button grid h-12 w-12 place-items-center rounded bg-mandy-orange text-white lg:hidden" aria-label="Open menu">
           <Menu size={25} strokeWidth={3} />
         </button>
       </div>
