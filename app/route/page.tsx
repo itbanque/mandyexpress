@@ -79,18 +79,17 @@ function HighwayShield({ className = "" }: { className?: string }) {
 
 function CorridorMap() {
   const stops = [
-    { name: "Montreal", x: 88, y: 115, anchor: "start" },
-    { name: "Cornwall", x: 255, y: 160, anchor: "middle" },
-    { name: "Kingston", x: 390, y: 192, anchor: "middle" },
-    { name: "Belleville", x: 555, y: 228, anchor: "middle" },
-    { name: "Oshawa", x: 780, y: 278, anchor: "middle" },
-    { name: "Toronto", x: 965, y: 318, anchor: "end" }
+    { name: "Toronto", x: 88, y: 115, anchor: "start" },
+    { name: "Oshawa", x: 255, y: 160, anchor: "middle" },
+    { name: "Belleville", x: 390, y: 192, anchor: "middle" },
+    { name: "Kingston", x: 555, y: 228, anchor: "middle" },
+    { name: "Cornwall", x: 780, y: 278, anchor: "middle" },
+    { name: "Montreal", x: 965, y: 318, anchor: "end" }
   ];
 
   return (
-    <div className="route-map-illustration" aria-label="Static route map from Montreal to Toronto along Highway 401">
+    <div className="route-map-illustration" aria-label="Static route map from Toronto to Montreal along Highway 401">
       <svg viewBox="0 0 1040 420" role="img">
-        <title>Montreal to Toronto Highway 401 route</title>
         <defs>
           <linearGradient id="routeWater" x1="0" x2="1" y1="0" y2="1">
             <stop offset="0" stopColor="#d9ecfb" />
@@ -135,7 +134,7 @@ function CorridorMap() {
           opacity="0.95"
         />
 
-        <g transform="translate(595 206)">
+        <g transform="translate(520 206)">
           <path d="M0 0c8 5 17 5 25 2v18c0 16-9 27-25 34C-16 47-25 36-25 20V2C-17 5-8 5 0 0Z" fill="#fff" stroke="#0b2345" strokeWidth="3" />
           <text x="0" y="31" textAnchor="middle" className="route-map-shield-text">
             401
@@ -157,7 +156,7 @@ function CorridorMap() {
         {stops.map((stop) => (
           <text
             x={stop.x}
-            y={stop.name === "Montreal" ? stop.y + 76 : stop.name === "Toronto" ? stop.y + 76 : stop.y + 34}
+            y={stop.name === "Toronto" ? stop.y + 76 : stop.name === "Montreal" ? stop.y + 76 : stop.y + 34}
             textAnchor={stop.anchor as "start" | "middle" | "end"}
             className="route-city-label"
             key={stop.name}
@@ -177,11 +176,11 @@ export default function RoutePage() {
 
       <section className="container route-hero" aria-label="Mandy Express Highway 401 route">
         <h1>
-          <span>Montreal</span>
-          <span className="route-arrow">→</span>
-          <HighwayShield className="route-hero-shield" />
-          <span className="route-arrow">→</span>
           <span>Toronto</span>
+          <span className="route-arrow" aria-hidden="true">↔</span>
+          <HighwayShield className="route-hero-shield" />
+          <span className="route-arrow" aria-hidden="true">↔</span>
+          <span>Montreal</span>
         </h1>
         <p>Daily Freight Service Along Highway 401</p>
         <QuoteButton />
