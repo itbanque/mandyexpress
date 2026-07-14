@@ -3,4 +3,6 @@ node_modules
 .npm-cache
 out
 .vercel
-.env*.local
+.env
+.env.*
+!.env.example

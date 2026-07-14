@@ -57,30 +57,57 @@ export default function QuoteModal() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (status === "submitting") return;
+
     setStatus("submitting");
     setErrorMessage("");
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const getValue = (name: string) => String(formData.get(name) || "");
+
+    const payload = {
+      fullName: getValue("fullName"),
+      company: getValue("company"),
+      phone: getValue("phone"),
+      email: getValue("email"),
+      pickupLocation: getValue("pickupLocation"),
+      deliveryLocation: getValue("deliveryLocation"),
+      pickupDate: getValue("pickupDate"),
+      requiredDeliveryTime: getValue("requiredDeliveryTime"),
+      typeOfGoods: getValue("typeOfGoods"),
+      numberOfPallets: getValue("numberOfPallets"),
+      approximateWeight: getValue("approximateWeight"),
+      dimensions: getValue("dimensions"),
+      specialRequirements: formData.getAll("specialRequirements").map(String),
+      additionalNotes: getValue("additionalNotes"),
+      companyWebsite: getValue("companyWebsite")
+    };
 
     try {
-      const response = await fetch("https://formsubmit.co/info@mandyexpress.ca", {
+      const response = await fetch("/api/quote", {
         method: "POST",
-        body: formData,
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/json"
-        }
+        },
+        body: JSON.stringify(payload)
       });
+      const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error("FormSubmit did not accept the request.");
+        throw new Error(typeof result.error === "string" ? result.error : "We could not send the request.");
       }
 
       form.reset();
       setStatus("success");
-    } catch {
+    } catch (error) {
       setStatus("error");
-      setErrorMessage("We could not send the request. Please email info@mandyexpress.ca or call 514-623-5486.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "We could not send the request. Please email info@mandyexpress.ca or call 514-623-5486."
+      );
     }
   };
 
@@ -120,33 +147,28 @@ export default function QuoteModal() {
         ) : (
           <form
             className="quote-form"
-            action="https://formsubmit.co/info@mandyexpress.ca"
-            method="POST"
             onSubmit={handleSubmit}
           >
-            <input type="hidden" name="_subject" value="New Mandy Express Quote Request" />
-            <input type="hidden" name="_template" value="table" />
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="text" name="_honey" className="quote-honey" tabIndex={-1} autoComplete="off" />
+            <input type="text" name="companyWebsite" className="quote-honey" tabIndex={-1} autoComplete="off" />
 
             <section className="quote-panel">
               <h3><User size={21} /> Contact Information</h3>
               <div className="quote-field-grid two-cols">
                 <label>
                   Full Name <span>*</span>
-                  <input name="Full Name" type="text" placeholder="Your name" required />
+                  <input name="fullName" type="text" placeholder="Your name" required />
                 </label>
                 <label>
-                  Company Name
-                  <input name="Company Name" type="text" placeholder="Company name" />
+                  Company Name <span>*</span>
+                  <input name="company" type="text" placeholder="Company name" required />
                 </label>
                 <label>
                   Phone Number <span>*</span>
-                  <input name="Phone Number" type="tel" placeholder="(514) 123-4567" required />
+                  <input name="phone" type="tel" placeholder="(514) 123-4567" required />
                 </label>
                 <label>
                   Email Address <span>*</span>
-                  <input name="Email Address" type="email" placeholder="you@example.com" required />
+                  <input name="email" type="email" placeholder="you@example.com" required />
                 </label>
               </div>
             </section>
@@ -156,19 +178,19 @@ export default function QuoteModal() {
               <div className="quote-field-grid two-cols">
                 <label>
                   Pick-up Location <span>*</span>
-                  <input name="Pick-up Location" type="text" placeholder="Enter pick-up address" required />
+                  <input name="pickupLocation" type="text" placeholder="Enter pick-up address" required />
                 </label>
                 <label>
                   Delivery Location <span>*</span>
-                  <input name="Delivery Location" type="text" placeholder="Enter delivery address" required />
+                  <input name="deliveryLocation" type="text" placeholder="Enter delivery address" required />
                 </label>
                 <label>
                   Pick-up Date <span>*</span>
-                  <input name="Pick-up Date" type="date" required />
+                  <input name="pickupDate" type="date" required />
                 </label>
                 <label>
                   Required Delivery Time <span>*</span>
-                  <select name="Required Delivery Time" required>
+                  <select name="requiredDeliveryTime" required>
                     <option value="">Select delivery time</option>
                     <option>Same-Day Delivery</option>
                     <option>Next-Day Delivery</option>
@@ -188,7 +210,7 @@ export default function QuoteModal() {
               <div className="goods-grid">
                 {goodsTypes.map((type) => (
                   <label key={type} className="choice-card">
-                    <input type="radio" name="Type of Goods" value={type} required />
+                    <input type="radio" name="typeOfGoods" value={type} required />
                     <span>{type}</span>
                   </label>
                 ))}
@@ -197,15 +219,15 @@ export default function QuoteModal() {
               <div className="quote-field-grid two-cols details-grid">
                 <label>
                   Number of Pallets <span>*</span>
-                  <input name="Number of Pallets" type="number" min="0" placeholder="Select pallet quantity" required />
+                  <input name="numberOfPallets" type="number" min="0" placeholder="Select pallet quantity" required />
                 </label>
                 <label>
                   Approximate Weight <span>*</span>
-                  <input name="Approximate Weight" type="text" placeholder="Enter weight in lbs" required />
+                  <input name="approximateWeight" type="text" placeholder="Enter weight in lbs" required />
                 </label>
                 <label className="span-two">
                   Dimensions
-                  <input name="Dimensions" type="text" placeholder="L x W x H (inches)" />
+                  <input name="dimensions" type="text" placeholder="L x W x H (inches)" />
                 </label>
               </div>
             </section>
@@ -215,7 +237,7 @@ export default function QuoteModal() {
               <div className="requirements-grid">
                 {specialRequirements.map((requirement) => (
                   <label key={requirement}>
-                    <input type="checkbox" name="Special Requirements" value={requirement} />
+                    <input type="checkbox" name="specialRequirements" value={requirement} />
                     {requirement}
                   </label>
                 ))}
@@ -226,7 +248,7 @@ export default function QuoteModal() {
               <h3><FileText size={21} /> Additional Notes</h3>
               <label>
                 Additional Notes
-                <textarea name="Additional Notes" placeholder="Write your message here..." rows={5} />
+                <textarea name="additionalNotes" placeholder="Write your message here..." rows={5} />
               </label>
             </section>
 
@@ -234,7 +256,7 @@ export default function QuoteModal() {
 
             <button className="quote-submit-button" type="submit" disabled={status === "submitting"}>
               <Send size={20} />
-              {status === "submitting" ? "Sending..." : "Submit Request"}
+              {status === "submitting" ? "SENDING..." : "Submit Request"}
             </button>
             <p className="quote-secure">Your information is secure and will only be used to respond to your request.</p>
           </form>
