@@ -30,7 +30,8 @@ const maxRequests = 4;
 const maxFieldLength = 500;
 const maxNotesLength = 3000;
 const isDevelopment = process.env.NODE_ENV !== "production";
-const defaultFromEmail = "Mandy Express Website <onboarding@resend.dev>";
+const duplicateWindowMs = 10 * 60 * 1000;
+const successfulSubmissions = new Map<string, number>();
 
 function describeError(error: unknown) {
   if (error instanceof Error) {
@@ -66,15 +67,17 @@ function logQuoteFailure(stage: string, details: Record<string, unknown>) {
   console.error(`[quote-api] ${stage}`, details);
 }
 
+function logRequestBody(body: Record<string, unknown>) {
+  if (isDevelopment) {
+    console.log("[quote-api] request body", body);
+  }
+}
+
 function failureResponse(message: string, status: number, developmentMessage?: string) {
   return NextResponse.json(
     { error: isDevelopment && developmentMessage ? developmentMessage : message },
     { status }
   );
-}
-
-function isUnverifiedDomainError(error: unknown) {
-  return /domain is not verified/i.test(errorMessage(error));
 }
 
 function getClientIp(request: NextRequest) {
@@ -92,6 +95,42 @@ function isRateLimited(ip: string) {
 
   current.count += 1;
   return current.count > maxRequests;
+}
+
+function submissionKey(payload: QuotePayload) {
+  return [
+    payload.fullName,
+    payload.company,
+    payload.phone,
+    payload.email,
+    payload.pickupLocation,
+    payload.deliveryLocation,
+    payload.pickupDate,
+    payload.requiredDeliveryTime,
+    payload.typeOfGoods,
+    payload.numberOfPallets,
+    payload.approximateWeight,
+    payload.dimensions,
+    payload.specialRequirements.join("|"),
+    payload.additionalNotes
+  ].join("\u001f");
+}
+
+function hasSuccessfulSubmission(key: string) {
+  const now = Date.now();
+
+  Array.from(successfulSubmissions.entries()).forEach(([storedKey, expiresAt]) => {
+    if (expiresAt <= now) {
+      successfulSubmissions.delete(storedKey);
+    }
+  });
+
+  const expiresAt = successfulSubmissions.get(key);
+  return Boolean(expiresAt && expiresAt > now);
+}
+
+function rememberSuccessfulSubmission(key: string) {
+  successfulSubmissions.set(key, Date.now() + duplicateWindowMs);
 }
 
 function asString(value: unknown) {
@@ -143,6 +182,59 @@ function section(title: string, rows: Array<[string, string]>) {
     <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
       ${tableRows(rows)}
     </table>
+  `;
+}
+
+function customerConfirmationHtml(payload: QuotePayload) {
+  return `
+    <div style="margin:0;padding:0;background:#f3f6fa;font-family:Arial,Helvetica,sans-serif;color:#0b2345;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#f3f6fa;">
+        <tr>
+          <td style="padding:28px 16px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;margin:0 auto;border-collapse:collapse;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+              <tr>
+                <td style="padding:24px 28px;background:#0b2345;color:#ffffff;">
+                  <p style="margin:0 0 8px;color:#ff6a00;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Mandy Express</p>
+                  <h1 style="margin:0;font-size:28px;line-height:1.2;color:#ffffff;">We&rsquo;ve Received Your Quote Request</h1>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:28px;">
+                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Hello ${formatValue(payload.fullName)},</p>
+                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Thank you for contacting Mandy Express. We received your quote request and our team will review your shipment details shortly.</p>
+                  <p style="margin:0 0 24px;font-size:16px;line-height:1.6;">A Mandy Express team member will contact you soon to confirm the details and provide the next steps.</p>
+
+                  <h2 style="margin:0 0 12px;color:#ff6a00;font-size:15px;letter-spacing:.04em;text-transform:uppercase;">Quote Summary</h2>
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+                    ${tableRows([
+                      ["Pickup location", payload.pickupLocation],
+                      ["Delivery location", payload.deliveryLocation],
+                      ["Pickup date", payload.pickupDate],
+                      ["Required delivery time", payload.requiredDeliveryTime],
+                      ["Type of goods", payload.typeOfGoods],
+                      ["Number of pallets", payload.numberOfPallets],
+                      ["Approximate weight", payload.approximateWeight]
+                    ])}
+                  </table>
+
+                  <div style="margin:26px 0 0;padding:18px 20px;background:#f8fafc;border-left:4px solid #ff6a00;">
+                    <h2 style="margin:0 0 10px;color:#0b2345;font-size:17px;">Contact Details</h2>
+                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>Phone:</strong> 514-623-5486</p>
+                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>Email:</strong> info@mandyexpress.ca</p>
+                    <p style="margin:0;font-size:15px;line-height:1.5;"><strong>Website:</strong> <a href="https://mandyexpress.ca" style="color:#ff6a00;text-decoration:none;">https://mandyexpress.ca</a></p>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:18px 28px;background:#0b2345;color:#ffffff;text-align:center;">
+                  <p style="margin:0;color:#ffffff;font-size:14px;">More Than Cargo. Your Trust, Our Priority.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
   `;
 }
 
@@ -232,7 +324,7 @@ export async function POST(request: NextRequest) {
     return failureResponse("Invalid request. Please try again.", 400, errorMessage(error));
   }
 
-  console.error("[quote-api] request body", body);
+  logRequestBody(body);
 
   const payload = normalizePayload(body);
 
@@ -248,29 +340,35 @@ export async function POST(request: NextRequest) {
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
-  const to = process.env.QUOTE_TO_EMAIL || "info@mandyexpress.ca";
-  const configuredFrom = process.env.RESEND_FROM_EMAIL?.trim();
-  const from = configuredFrom || defaultFromEmail;
+  const to = process.env.QUOTE_TO_EMAIL;
+  const from = process.env.RESEND_FROM_EMAIL;
   const missingEnvironmentVariables = [
     !resendApiKey ? "RESEND_API_KEY" : "",
-    !process.env.QUOTE_TO_EMAIL ? "QUOTE_TO_EMAIL" : "",
-    !process.env.RESEND_FROM_EMAIL ? "RESEND_FROM_EMAIL" : ""
+    !to ? "QUOTE_TO_EMAIL" : "",
+    !from ? "RESEND_FROM_EMAIL" : ""
   ].filter(Boolean);
 
   if (missingEnvironmentVariables.length) {
     logQuoteFailure("missing environment variables", {
       missingEnvironmentVariables,
-      usingQuoteToFallback: !process.env.QUOTE_TO_EMAIL,
-      usingFromFallback: !process.env.RESEND_FROM_EMAIL
+      usingQuoteToFallback: false,
+      usingFromFallback: false
     });
   }
 
-  if (!resendApiKey) {
+  if (!resendApiKey || !to || !from) {
     return failureResponse(
       "Quote email delivery is not configured yet. Please call 514-623-5486 or email info@mandyexpress.ca.",
       503,
-      "Missing RESEND_API_KEY"
+      `Missing environment variables: ${missingEnvironmentVariables.join(", ")}`
     );
+  }
+
+  const key = submissionKey(payload);
+
+  if (hasSuccessfulSubmission(key)) {
+    console.log("[quote-api] duplicate quote submission ignored");
+    return NextResponse.json({ ok: true, duplicate: true });
   }
 
   const resend = new Resend(resendApiKey);
@@ -280,9 +378,9 @@ export async function POST(request: NextRequest) {
     timeZone: "America/Toronto"
   }).format(new Date());
 
-  const subject = `New Quote Request — ${payload.fullName} — ${payload.pickupLocation} to ${payload.deliveryLocation}`;
+  const companySubject = `New Quote Request — ${payload.fullName} — ${payload.pickupLocation} to ${payload.deliveryLocation}`;
   const requirements = payload.specialRequirements.length ? payload.specialRequirements.join(", ") : "None selected";
-  const html = `
+  const companyHtml = `
     <div style="margin:0;padding:24px;background:#f3f6fa;font-family:Arial,sans-serif;color:#1f2937;">
       <div style="max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
         <div style="padding:22px 26px;background:#0b2345;color:#ffffff;">
@@ -315,62 +413,37 @@ export async function POST(request: NextRequest) {
       </div>
     </div>
   `;
+  const customerHtml = customerConfirmationHtml(payload);
 
   try {
-    const resendResponse = await resend.emails.send({
-      from,
-      to,
-      replyTo: payload.email,
-      subject,
-      html
-    });
+    const resendResponse = await resend.batch.send([
+      {
+        from,
+        to: [to],
+        replyTo: payload.email,
+        subject: companySubject,
+        html: companyHtml
+      },
+      {
+        from,
+        to: [payload.email],
+        replyTo: "info@mandyexpress.ca",
+        subject: "We Received Your Quote Request — Mandy Express",
+        html: customerHtml
+      }
+    ]);
 
-    console.error("[quote-api] Resend response", resendResponse);
+    console.log("[quote-api] Resend batch response", JSON.stringify(resendResponse));
 
     const { error } = resendResponse;
 
     if (error) {
-      if (isDevelopment && configuredFrom && configuredFrom !== defaultFromEmail && isUnverifiedDomainError(error)) {
-        logQuoteFailure("configured sender domain is not verified; retrying with Resend development sender", {
-          resendError: error,
-          configuredFrom,
-          retryFrom: defaultFromEmail,
-          to
-        });
-
-        const retryResponse = await resend.emails.send({
-          from: defaultFromEmail,
-          to,
-          replyTo: payload.email,
-          subject,
-          html
-        });
-
-        console.error("[quote-api] Resend retry response", retryResponse);
-
-        if (!retryResponse.error) {
-          return NextResponse.json({ ok: true });
-        }
-
-        logQuoteFailure("resend retry returned error", {
-          requestBody: body,
-          resendError: retryResponse.error,
-          from: defaultFromEmail,
-          to
-        });
-
-        return failureResponse(
-          "We could not send your quote request. Please call 514-623-5486 or email info@mandyexpress.ca.",
-          502,
-          errorMessage(retryResponse.error)
-        );
-      }
-
-      logQuoteFailure("resend returned error", {
-        requestBody: body,
+      logQuoteFailure("resend batch returned error", {
+        requestBody: isDevelopment ? body : undefined,
         resendError: error,
         from,
-        to
+        companyTo: to,
+        customerTo: payload.email
       });
 
       return failureResponse(
@@ -380,13 +453,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    rememberSuccessfulSubmission(key);
     return NextResponse.json({ ok: true });
   } catch (error) {
     logQuoteFailure("caught exception", {
-      requestBody: body,
+      requestBody: isDevelopment ? body : undefined,
       error: describeError(error),
       from,
-      to
+      companyTo: to,
+      customerTo: payload.email
     });
 
     return failureResponse(
