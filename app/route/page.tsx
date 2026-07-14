@@ -79,17 +79,17 @@ function HighwayShield({ className = "" }: { className?: string }) {
 
 function CorridorMap() {
   const stops = [
-    { name: "Toronto", x: 88, y: 115, anchor: "start" },
-    { name: "Oshawa", x: 255, y: 160, anchor: "middle" },
-    { name: "Belleville", x: 390, y: 192, anchor: "middle" },
-    { name: "Kingston", x: 555, y: 228, anchor: "middle" },
-    { name: "Cornwall", x: 780, y: 278, anchor: "middle" },
-    { name: "Montreal", x: 965, y: 318, anchor: "end" }
+    { name: "Toronto", x: 85, y: 170, labelX: 65, labelY: 235, anchor: "start" },
+    { name: "Oshawa", x: 245, y: 205, labelX: 210, labelY: 250, anchor: "middle" },
+    { name: "Belleville", x: 420, y: 235, labelX: 365, labelY: 280, anchor: "middle" },
+    { name: "Kingston", x: 650, y: 270, labelX: 610, labelY: 320, anchor: "middle" },
+    { name: "Cornwall", x: 890, y: 305, labelX: 845, labelY: 350, anchor: "middle" },
+    { name: "Montreal", x: 1115, y: 350, labelX: 1060, labelY: 405, anchor: "end" }
   ];
 
   return (
     <div className="route-map-illustration" aria-label="Static route map from Toronto to Montreal along Highway 401">
-      <svg viewBox="0 0 1040 420" role="img">
+      <svg viewBox="0 0 1200 420" role="img" aria-label="Toronto to Montreal Highway 401 route" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="routeWater" x1="0" x2="1" y1="0" y2="1">
             <stop offset="0" stopColor="#d9ecfb" />
@@ -100,63 +100,86 @@ function CorridorMap() {
           </filter>
         </defs>
 
-        <rect width="1040" height="420" fill="#f6faf8" />
+        <rect width="1200" height="420" fill="#f6faf8" />
         <path
-          d="M0 252 C120 232 210 258 310 245 C430 230 520 265 635 250 C780 230 890 255 1040 238 L1040 420 L0 420 Z"
+          d="M0 258 C120 232 248 256 362 246 C500 232 604 270 738 255 C904 238 1030 258 1200 238 L1200 420 L0 420 Z"
           fill="url(#routeWater)"
         />
         <path
-          d="M26 318 C145 286 253 316 356 292 C485 262 604 304 721 277 C835 250 933 280 1040 260"
+          d="M22 326 C155 292 292 320 420 294 C572 264 722 305 866 278 C1002 252 1102 281 1200 260"
           fill="none"
           stroke="#b6d8ef"
-          strokeWidth="26"
+          strokeWidth="24"
+          opacity="0.5"
+        />
+        <path
+          d="M80 76 C170 58 248 82 346 68 C478 50 574 88 708 72 C840 56 935 82 1052 64 C1116 54 1162 58 1200 52"
+          fill="none"
+          stroke="#d8eadf"
+          strokeWidth="14"
+          opacity="0.42"
+        />
+        <path
+          d="M40 140 C135 122 220 142 310 132 C445 116 558 144 680 132 C830 116 940 146 1088 126 C1130 120 1166 122 1200 116"
+          fill="none"
+          stroke="#d7ebf8"
+          strokeWidth="9"
           opacity="0.55"
         />
-        <text x="500" y="354" textAnchor="middle" className="route-lake-label">
+        <text x="575" y="360" textAnchor="middle" className="route-lake-label">
           LAKE ONTARIO
         </text>
 
         <path
-          d="M88 115 C170 136 203 148 255 160 S338 180 390 192 S502 216 555 228 S695 254 780 278 S910 302 965 318"
+          d="M85 170 C150 185 195 195 245 205 C310 215 365 225 420 235 C500 245 575 260 650 270 C730 280 810 292 890 305 C970 320 1040 335 1115 350"
           fill="none"
           stroke="#c9522a"
-          strokeWidth="7"
+          strokeWidth="10"
           strokeLinecap="round"
+          strokeLinejoin="round"
           filter="url(#mapSoftShadow)"
         />
         <path
-          d="M88 115 C170 136 203 148 255 160 S338 180 390 192 S502 216 555 228 S695 254 780 278 S910 302 965 318"
+          d="M85 170 C150 185 195 195 245 205 C310 215 365 225 420 235 C500 245 575 260 650 270 C730 280 810 292 890 305 C970 320 1040 335 1115 350"
           fill="none"
           stroke="#ff6a00"
-          strokeWidth="4"
+          strokeWidth="6"
           strokeLinecap="round"
-          strokeDasharray="1 18"
-          opacity="0.95"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M85 170 C150 185 195 195 245 205 C310 215 365 225 420 235 C500 245 575 260 650 270 C730 280 810 292 890 305 C970 320 1040 335 1115 350"
+          fill="none"
+          stroke="#ffb27b"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray="2 20"
+          opacity="0.55"
         />
 
-        <g transform="translate(520 206)">
+        <g transform="translate(600 220) scale(1.12)">
           <path d="M0 0c8 5 17 5 25 2v18c0 16-9 27-25 34C-16 47-25 36-25 20V2C-17 5-8 5 0 0Z" fill="#fff" stroke="#0b2345" strokeWidth="3" />
           <text x="0" y="31" textAnchor="middle" className="route-map-shield-text">
             401
           </text>
         </g>
 
-        <g transform="translate(88 106)">
+        <g transform="translate(85 109) scale(0.68)">
           <path d="M0 0c-18 0-32 14-32 32 0 25 32 58 32 58s32-33 32-58C32 14 18 0 0 0Z" fill="#ff6a00" />
           <circle cx="0" cy="31" r="11" fill="#fff" />
         </g>
-        <g transform="translate(965 309)">
+        <g transform="translate(1115 289) scale(0.68)">
           <path d="M0 0c-18 0-32 14-32 32 0 25 32 58 32 58s32-33 32-58C32 14 18 0 0 0Z" fill="#ff6a00" />
           <circle cx="0" cy="31" r="11" fill="#fff" />
         </g>
 
         {stops.slice(1, -1).map((stop) => (
-          <circle cx={stop.x} cy={stop.y} r="8" fill="#0b2345" stroke="#fff" strokeWidth="4" key={stop.name} />
+          <circle cx={stop.x} cy={stop.y} r="9" fill="#071d3b" stroke="#fff" strokeWidth="4" key={stop.name} />
         ))}
         {stops.map((stop) => (
           <text
-            x={stop.x}
-            y={stop.name === "Toronto" ? stop.y + 76 : stop.name === "Montreal" ? stop.y + 76 : stop.y + 34}
+            x={stop.labelX}
+            y={stop.labelY}
             textAnchor={stop.anchor as "start" | "middle" | "end"}
             className="route-city-label"
             key={stop.name}

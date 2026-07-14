@@ -841,6 +841,9 @@ canvas {
 }
 
 .route-map-illustration {
+  width: 100%;
+  aspect-ratio: 1200 / 420;
+  min-height: 0;
   overflow: hidden;
   background: #f6faf8;
 }
@@ -848,7 +851,7 @@ canvas {
 .route-map-illustration svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .route-lake-label {
@@ -872,7 +875,7 @@ canvas {
 }
 
 .route-city-label {
-  font-size: 21px;
+  font-size: 24px;
 }
 
 .route-highlights {
@@ -2493,7 +2496,7 @@ canvas {
   .route-map-illustration svg {
     width: 100%;
     max-width: 100%;
-    height: auto;
+    height: 100%;
   }
 
   .route-highlights {
