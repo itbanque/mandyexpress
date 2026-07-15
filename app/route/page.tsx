@@ -79,13 +79,15 @@ function HighwayShield({ className = "" }: { className?: string }) {
 
 function CorridorMap() {
   const stops = [
-    { name: "Toronto", x: 85, y: 170, labelX: 65, labelY: 235, anchor: "start" },
-    { name: "Oshawa", x: 245, y: 205, labelX: 210, labelY: 250, anchor: "middle" },
-    { name: "Belleville", x: 420, y: 235, labelX: 365, labelY: 280, anchor: "middle" },
-    { name: "Kingston", x: 650, y: 270, labelX: 610, labelY: 320, anchor: "middle" },
-    { name: "Cornwall", x: 890, y: 305, labelX: 845, labelY: 350, anchor: "middle" },
-    { name: "Montreal", x: 1115, y: 350, labelX: 1060, labelY: 405, anchor: "end" }
+    { name: "Toronto", x: 90, y: 170, labelX: 62, labelY: 238, anchor: "start" },
+    { name: "Oshawa", x: 260, y: 188, labelX: 215, labelY: 242, anchor: "middle" },
+    { name: "Belleville", x: 435, y: 225, labelX: 375, labelY: 285, anchor: "middle" },
+    { name: "Kingston", x: 650, y: 245, labelX: 600, labelY: 305, anchor: "middle" },
+    { name: "Cornwall", x: 890, y: 295, labelX: 830, labelY: 355, anchor: "middle" },
+    { name: "Montreal", x: 1110, y: 350, labelX: 1035, labelY: 410, anchor: "end" }
   ];
+  const routePath =
+    "M 90 170 C 150 145, 210 155, 260 188 C 320 205, 380 220, 435 225 C 500 230, 575 240, 650 245 C 725 250, 810 275, 890 295 C 965 315, 1035 340, 1110 350";
 
   return (
     <div className="route-map-illustration" aria-label="Static route map from Toronto to Montreal along Highway 401">
@@ -131,7 +133,7 @@ function CorridorMap() {
         </text>
 
         <path
-          d="M85 170 C150 185 195 195 245 205 C310 215 365 225 420 235 C500 245 575 260 650 270 C730 280 810 292 890 305 C970 320 1040 335 1115 350"
+          d={routePath}
           fill="none"
           stroke="#c9522a"
           strokeWidth="10"
@@ -140,15 +142,15 @@ function CorridorMap() {
           filter="url(#mapSoftShadow)"
         />
         <path
-          d="M85 170 C150 185 195 195 245 205 C310 215 365 225 420 235 C500 245 575 260 650 270 C730 280 810 292 890 305 C970 320 1040 335 1115 350"
+          d={routePath}
           fill="none"
           stroke="#ff6a00"
-          strokeWidth="6"
+          strokeWidth="8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
-          d="M85 170 C150 185 195 195 245 205 C310 215 365 225 420 235 C500 245 575 260 650 270 C730 280 810 292 890 305 C970 320 1040 335 1115 350"
+          d={routePath}
           fill="none"
           stroke="#ffb27b"
           strokeWidth="2"
@@ -157,18 +159,18 @@ function CorridorMap() {
           opacity="0.55"
         />
 
-        <g transform="translate(600 220) scale(1.12)">
+        <g transform="translate(615 205) scale(1.12)">
           <path d="M0 0c8 5 17 5 25 2v18c0 16-9 27-25 34C-16 47-25 36-25 20V2C-17 5-8 5 0 0Z" fill="#fff" stroke="#0b2345" strokeWidth="3" />
           <text x="0" y="31" textAnchor="middle" className="route-map-shield-text">
             401
           </text>
         </g>
 
-        <g transform="translate(85 109) scale(0.68)">
+        <g transform="translate(90 109) scale(0.68)">
           <path d="M0 0c-18 0-32 14-32 32 0 25 32 58 32 58s32-33 32-58C32 14 18 0 0 0Z" fill="#ff6a00" />
           <circle cx="0" cy="31" r="11" fill="#fff" />
         </g>
-        <g transform="translate(1115 289) scale(0.68)">
+        <g transform="translate(1110 289) scale(0.68)">
           <path d="M0 0c-18 0-32 14-32 32 0 25 32 58 32 58s32-33 32-58C32 14 18 0 0 0Z" fill="#ff6a00" />
           <circle cx="0" cy="31" r="11" fill="#fff" />
         </g>
