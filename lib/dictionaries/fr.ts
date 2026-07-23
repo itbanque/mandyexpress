@@ -24,6 +24,13 @@ export const fr: Dictionary = {
   common: {
     getAQuote: "Obtenir une soumission"
   },
+  cookieConsent: {
+    ariaLabel: "Consentement aux témoins",
+    message:
+      "Nous utilisons des témoins (cookies) pour améliorer votre expérience de navigation et mémoriser vos préférences. En cliquant sur « Accepter », vous consentez à leur utilisation.",
+    accept: "Accepter",
+    decline: "Refuser"
+  },
   meta: {
     root: {
       title: "Mandy Express | Livraison de fret le jour même",

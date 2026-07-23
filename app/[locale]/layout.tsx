@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
+import CookieConsent from "@/components/CookieConsent";
 import I18nProvider from "@/components/I18nProvider";
 import { getDictionary, localeFromParams } from "@/lib/dictionaries";
 import { locales } from "@/lib/i18n";
@@ -69,6 +70,7 @@ export default async function RootLayout({
       <body suppressHydrationWarning>
         <I18nProvider locale={locale} dict={dict}>
           {children}
+          <CookieConsent />
         </I18nProvider>
       </body>
     </html>

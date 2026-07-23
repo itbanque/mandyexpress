@@ -22,6 +22,13 @@ export const en = {
   common: {
     getAQuote: "Get a Quote"
   },
+  cookieConsent: {
+    ariaLabel: "Cookie consent",
+    message:
+      "We use cookies to improve your browsing experience and remember your preferences. By clicking “Accept”, you agree to our use of cookies.",
+    accept: "Accept",
+    decline: "Decline"
+  },
   meta: {
     root: {
       title: "Mandy Express | Same-Day Freight Delivery",

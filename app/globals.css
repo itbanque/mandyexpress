@@ -49,6 +49,7 @@ canvas {
   height: 108px;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
   padding: 0 32px;
 }
 
@@ -109,6 +110,7 @@ canvas {
   font-size: 18px;
   font-weight: 800;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .nav-link-active {
@@ -1959,6 +1961,30 @@ canvas {
   pointer-events: none;
 }
 
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .header-inner {
+    gap: 16px;
+  }
+
+  .desktop-nav {
+    gap: 22px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+  }
+
+  .header-logo {
+    width: 200px !important;
+  }
+
+  .quote-button.desktop-quote-button {
+    min-width: 0;
+    padding: 0 16px;
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 1023px) {
   .desktop-nav,
   .desktop-quote-button,
@@ -2872,4 +2898,63 @@ canvas {
     min-width: 44px;
     height: 44px;
   }
+}
+
+.cookie-banner {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 90;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 28px;
+  margin: 0 auto;
+  max-width: 920px;
+  border-radius: 8px;
+  background: var(--navy);
+  padding: 18px 26px;
+  color: #ffffff;
+  box-shadow: 0 10px 34px rgba(6, 27, 54, 0.4);
+}
+
+.cookie-banner-text {
+  margin: 0;
+  flex: 1 1 380px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cookie-banner-button {
+  min-height: 44px;
+  border-radius: 5px;
+  padding: 0 22px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cookie-accept {
+  background: var(--orange);
+  color: #ffffff;
+}
+
+.cookie-decline {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+}
+
+.cookie-decline:hover {
+  border-color: rgba(255, 255, 255, 0.8);
 }
