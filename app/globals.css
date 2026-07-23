@@ -125,6 +125,31 @@ canvas {
   background: var(--orange);
 }
 
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 2px solid var(--navy);
+  border-radius: 5px;
+  color: var(--navy);
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lang-switch:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.mobile-lang-switch {
+  border-bottom: none;
+}
+
 .quote-button {
   display: inline-flex;
   min-height: 56px;
@@ -1936,7 +1961,8 @@ canvas {
 
 @media (max-width: 1023px) {
   .desktop-nav,
-  .desktop-quote-button {
+  .desktop-quote-button,
+  .desktop-lang-switch {
     display: none !important;
   }
 

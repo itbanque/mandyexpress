@@ -1,34 +1,17 @@
 import { CalendarDays, Clock3, DoorOpen, Route } from "lucide-react";
+import { getDictionary } from "@/lib/dictionaries";
+import type { Locale } from "@/lib/i18n";
 
-const services = [
-  {
-    icon: Clock3,
-    title: "Same-Day Delivery",
-    lines: ["Pick up in the morning.", "Deliver the same day."]
-  },
-  {
-    icon: CalendarDays,
-    title: "Daily Dedicated Service",
-    lines: ["Toronto ↔ Montreal", "Every business day."]
-  },
-  {
-    icon: DoorOpen,
-    title: "Door-to-Door",
-    lines: ["No terminal transfers.", "Direct to your door."]
-  },
-  {
-    icon: Route,
-    title: "401 Corridor Specialists",
-    lines: ["One route.", "One focus."]
-  }
-];
+const serviceIcons = [Clock3, CalendarDays, DoorOpen, Route];
 
-export default function Services() {
+export default async function Services({ locale }: { locale: Locale }) {
+  const dict = await getDictionary(locale);
+
   return (
     <section id="services" className="bg-white py-7 md:py-8">
       <div className="container services-grid">
-        {services.map((service, index) => {
-          const Icon = service.icon;
+        {dict.home.services.map((service, index) => {
+          const Icon = serviceIcons[index];
 
           return (
             <article key={service.title} className={`service-card ${index > 0 ? "lg:border-l" : ""}`}>

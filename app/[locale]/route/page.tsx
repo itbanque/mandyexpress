@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   CalendarDays,
   Clock3,
@@ -11,57 +12,25 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import QuoteButton from "@/components/QuoteButton";
 import QuoteModal from "@/components/QuoteModal";
+import { localeFromParams, type Dictionary } from "@/lib/dictionaries";
+import { pageAlternates } from "@/lib/i18n";
 
-const highlights = [
-  {
-    icon: CalendarDays,
-    title: "Daily Service",
-    lines: ["Montreal to Toronto", "Every Business Day"]
-  },
-  {
-    icon: Clock3,
-    title: "Same-Day Delivery",
-    lines: ["Fast, reliable and", "on-time delivery"]
-  },
-  {
-    icon: DoorOpen,
-    title: "Door-to-Door",
-    lines: ["Direct pickup and delivery", "No terminal transfers"]
-  },
-  {
-    icon: Truck,
-    title: "Dedicated Cargo Van",
-    lines: ["One shipment.", "One vehicle. One driver."]
-  }
-];
+type PageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-const details = [
-  {
-    icon: MapPin,
-    title: "Distance",
-    lines: ["Approx. 545 KM"]
-  },
-  {
-    icon: Clock3,
-    title: "Drive Time",
-    lines: ["Approx. 5.5 - 6.5 Hours"]
-  },
-  {
-    icon: Map,
-    title: "Major Stops",
-    lines: ["Cornwall, Kingston,", "Belleville, Oshawa"]
-  },
-  {
-    icon: CalendarDays,
-    title: "Frequency",
-    lines: ["Daily (Mon - Fri)", "Saturday Service Available"]
-  },
-  {
-    icon: Package,
-    title: "Capacity",
-    lines: ["Dedicated Cargo Van", "Up to 3500 KG"]
-  }
-];
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale, dict } = await localeFromParams(params);
+
+  return {
+    title: dict.meta.route.title,
+    description: dict.meta.route.description,
+    alternates: pageAlternates(locale, "/route")
+  };
+}
+
+const highlightIcons = [CalendarDays, Clock3, DoorOpen, Truck];
+const detailIcons = [MapPin, Clock3, Map, CalendarDays, Package];
 
 function HighwayShield({ className = "" }: { className?: string }) {
   return (
@@ -77,21 +46,22 @@ function HighwayShield({ className = "" }: { className?: string }) {
   );
 }
 
-function CorridorMap() {
-  const stops = [
-    { name: "Toronto", x: 90, y: 170, labelX: 62, labelY: 238, anchor: "start" },
-    { name: "Oshawa", x: 260, y: 188, labelX: 215, labelY: 242, anchor: "middle" },
-    { name: "Belleville", x: 435, y: 225, labelX: 375, labelY: 285, anchor: "middle" },
-    { name: "Kingston", x: 650, y: 245, labelX: 600, labelY: 305, anchor: "middle" },
-    { name: "Cornwall", x: 890, y: 295, labelX: 830, labelY: 355, anchor: "middle" },
-    { name: "Montreal", x: 1110, y: 350, labelX: 1035, labelY: 410, anchor: "end" }
+function CorridorMap({ t }: { t: Dictionary["routePage"] }) {
+  const stopPositions = [
+    { x: 90, y: 170, labelX: 62, labelY: 238, anchor: "start" },
+    { x: 260, y: 188, labelX: 215, labelY: 242, anchor: "middle" },
+    { x: 435, y: 225, labelX: 375, labelY: 285, anchor: "middle" },
+    { x: 650, y: 245, labelX: 600, labelY: 305, anchor: "middle" },
+    { x: 890, y: 295, labelX: 830, labelY: 355, anchor: "middle" },
+    { x: 1110, y: 350, labelX: 1035, labelY: 410, anchor: "end" }
   ];
+  const stops = stopPositions.map((position, index) => ({ ...position, name: t.cities[index] }));
   const routePath =
     "M 90 170 C 150 145, 210 155, 260 188 C 320 205, 380 220, 435 225 C 500 230, 575 240, 650 245 C 725 250, 810 275, 890 295 C 965 315, 1035 340, 1110 350";
 
   return (
-    <div className="route-map-illustration" aria-label="Static route map from Toronto to Montreal along Highway 401">
-      <svg viewBox="0 0 1200 420" role="img" aria-label="Toronto to Montreal Highway 401 route" preserveAspectRatio="xMidYMid meet">
+    <div className="route-map-illustration" aria-label={t.mapAria}>
+      <svg viewBox="0 0 1200 420" role="img" aria-label={t.mapSvgAria} preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="routeWater" x1="0" x2="1" y1="0" y2="1">
             <stop offset="0" stopColor="#d9ecfb" />
@@ -129,7 +99,7 @@ function CorridorMap() {
           opacity="0.55"
         />
         <text x="575" y="360" textAnchor="middle" className="route-lake-label">
-          LAKE ONTARIO
+          {t.lakeLabel}
         </text>
 
         <path
@@ -194,34 +164,37 @@ function CorridorMap() {
   );
 }
 
-export default function RoutePage() {
+export default async function RoutePage({ params }: PageProps) {
+  const { locale, dict } = await localeFromParams(params);
+  const t = dict.routePage;
+
   return (
     <main className="min-h-screen bg-white text-mandy-navy">
-      <Header activeItem="Route" />
+      <Header activeItem="route" />
 
-      <section className="container route-hero" aria-label="Mandy Express Highway 401 route">
+      <section className="container route-hero" aria-label={t.heroAria}>
         <h1>
-          <span>Toronto</span>
+          <span>{t.toronto}</span>
           <span className="route-arrow" aria-hidden="true">↔</span>
           <HighwayShield className="route-hero-shield" />
           <span className="route-arrow" aria-hidden="true">↔</span>
-          <span>Montreal</span>
+          <span>{t.montreal}</span>
         </h1>
-        <p>Daily Freight Service Along Highway 401</p>
+        <p>{t.heroSubtitle}</p>
         <QuoteButton />
       </section>
 
       <section className="container route-corridor-section" aria-labelledby="corridor-heading">
         <div className="route-section-heading">
-          <h2 id="corridor-heading">The 401 Corridor</h2>
+          <h2 id="corridor-heading">{t.corridorHeading}</h2>
           <span />
         </div>
-        <CorridorMap />
+        <CorridorMap t={t} />
       </section>
 
-      <section className="container route-highlights" aria-label="Route service highlights">
-        {highlights.map((highlight, index) => {
-          const Icon = highlight.icon;
+      <section className="container route-highlights" aria-label={t.highlightsAria}>
+        {t.highlights.map((highlight, index) => {
+          const Icon = highlightIcons[index];
           return (
             <article className={`route-info-column ${index > 0 ? "route-column-divider" : ""}`} key={highlight.title}>
               <Icon size={50} strokeWidth={2} />
@@ -236,12 +209,12 @@ export default function RoutePage() {
 
       <section className="container route-details-section" aria-labelledby="details-heading">
         <div className="route-section-heading">
-          <h2 id="details-heading">Route Details</h2>
+          <h2 id="details-heading">{t.detailsHeading}</h2>
           <span />
         </div>
         <div className="route-details-grid">
-          {details.map((detail, index) => {
-            const Icon = detail.icon;
+          {t.details.map((detail, index) => {
+            const Icon = detailIcons[index];
             return (
               <article className={`route-detail-column ${index > 0 ? "route-column-divider" : ""}`} key={detail.title}>
                 <Icon size={34} strokeWidth={1.9} />
@@ -255,7 +228,7 @@ export default function RoutePage() {
         </div>
       </section>
 
-      <Footer />
+      <Footer locale={locale} />
       <QuoteModal />
     </main>
   );

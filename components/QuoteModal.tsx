@@ -2,25 +2,11 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { CheckCircle2, Clock3, FileText, MapPin, Package, Send, User, X } from "lucide-react";
-
-const goodsTypes = [
-  "Apparel / Garments",
-  "Retail Products",
-  "Samples",
-  "Cartons",
-  "Palletized Freight",
-  "Other"
-];
-
-const specialRequirements = [
-  "Liftgate Service",
-  "Inside Delivery",
-  "Residential Delivery",
-  "Limited Access",
-  "Special Handling / Fragile"
-];
+import { useI18n } from "./I18nProvider";
 
 export default function QuoteModal() {
+  const { locale, dict } = useI18n();
+  const t = dict.quote;
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -81,7 +67,8 @@ export default function QuoteModal() {
       dimensions: getValue("dimensions"),
       specialRequirements: formData.getAll("specialRequirements").map(String),
       additionalNotes: getValue("additionalNotes"),
-      companyWebsite: getValue("companyWebsite")
+      companyWebsite: getValue("companyWebsite"),
+      locale
     };
 
     try {
@@ -96,18 +83,14 @@ export default function QuoteModal() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(typeof result.error === "string" ? result.error : "We could not send the request.");
+        throw new Error(typeof result.error === "string" ? result.error : t.errorFallback);
       }
 
       form.reset();
       setStatus("success");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "We could not send the request. Please email info@mandyexpress.ca or call 514-623-5486."
-      );
+      setErrorMessage(error instanceof Error ? error.message : t.errorFallback);
     }
   };
 
@@ -126,11 +109,11 @@ export default function QuoteModal() {
           <div className="quote-title-wrap">
             <span className="quote-title-icon"><FileText size={24} /></span>
             <div>
-              <h2 id="quote-modal-title">Request a Quote</h2>
-              <p>Fast. Reliable. Same-Day Delivery. Toronto ↔ Montreal Along Highway 401</p>
+              <h2 id="quote-modal-title">{t.title}</h2>
+              <p>{t.subtitle}</p>
             </div>
           </div>
-          <button type="button" className="quote-close-button" aria-label="Close quote form" onClick={closeModal}>
+          <button type="button" className="quote-close-button" aria-label={t.closeAria} onClick={closeModal}>
             <X size={24} />
           </button>
         </div>
@@ -138,10 +121,10 @@ export default function QuoteModal() {
         {status === "success" ? (
           <div className="quote-success">
             <CheckCircle2 size={54} />
-            <h3>Request Sent</h3>
-            <p>Thank you. Your quote request has been sent to info@mandyexpress.ca.</p>
+            <h3>{t.successTitle}</h3>
+            <p>{t.successBody}</p>
             <button type="button" className="quote-button inline-flex" onClick={closeModal}>
-              Close
+              {t.close}
             </button>
           </div>
         ) : (
@@ -152,63 +135,61 @@ export default function QuoteModal() {
             <input type="text" name="companyWebsite" className="quote-honey" tabIndex={-1} autoComplete="off" />
 
             <section className="quote-panel">
-              <h3><User size={21} /> Contact Information</h3>
+              <h3><User size={21} /> {t.contactInfo}</h3>
               <div className="quote-field-grid two-cols">
                 <label>
-                  Full Name <span>*</span>
-                  <input name="fullName" type="text" placeholder="Your name" required />
+                  {t.fullName} <span>*</span>
+                  <input name="fullName" type="text" placeholder={t.fullNamePlaceholder} required />
                 </label>
                 <label>
-                  Company Name <span>*</span>
-                  <input name="company" type="text" placeholder="Company name" required />
+                  {t.company} <span>*</span>
+                  <input name="company" type="text" placeholder={t.companyPlaceholder} required />
                 </label>
                 <label>
-                  Phone Number <span>*</span>
-                  <input name="phone" type="tel" placeholder="(514) 123-4567" required />
+                  {t.phone} <span>*</span>
+                  <input name="phone" type="tel" placeholder={t.phonePlaceholder} required />
                 </label>
                 <label>
-                  Email Address <span>*</span>
-                  <input name="email" type="email" placeholder="you@example.com" required />
+                  {t.email} <span>*</span>
+                  <input name="email" type="email" placeholder={t.emailPlaceholder} required />
                 </label>
               </div>
             </section>
 
             <section className="quote-panel">
-              <h3><MapPin size={21} /> Shipment Information</h3>
+              <h3><MapPin size={21} /> {t.shipmentInfo}</h3>
               <div className="quote-field-grid two-cols">
                 <label>
-                  Pick-up Location <span>*</span>
-                  <input name="pickupLocation" type="text" placeholder="Enter pick-up address" required />
+                  {t.pickupLocation} <span>*</span>
+                  <input name="pickupLocation" type="text" placeholder={t.pickupLocationPlaceholder} required />
                 </label>
                 <label>
-                  Delivery Location <span>*</span>
-                  <input name="deliveryLocation" type="text" placeholder="Enter delivery address" required />
+                  {t.deliveryLocation} <span>*</span>
+                  <input name="deliveryLocation" type="text" placeholder={t.deliveryLocationPlaceholder} required />
                 </label>
                 <label>
-                  Pick-up Date <span>*</span>
+                  {t.pickupDate} <span>*</span>
                   <input name="pickupDate" type="date" required />
                 </label>
                 <label>
-                  Required Delivery Time <span>*</span>
+                  {t.requiredDeliveryTime} <span>*</span>
                   <select name="requiredDeliveryTime" required>
-                    <option value="">Select delivery time</option>
-                    <option>Same-Day Delivery</option>
-                    <option>Next-Day Delivery</option>
-                    <option>Flexible Delivery</option>
-                    <option>Morning Delivery</option>
-                    <option>Afternoon Delivery</option>
+                    <option value="">{t.deliveryTimePlaceholder}</option>
+                    {t.deliveryTimeOptions.map((option) => (
+                      <option key={option}>{option}</option>
+                    ))}
                   </select>
                 </label>
               </div>
             </section>
 
             <section className="quote-panel">
-              <h3><Package size={21} /> Additional Details</h3>
+              <h3><Package size={21} /> {t.additionalDetails}</h3>
               <label className="quote-full-label">
-                Type of Goods <span>*</span>
+                {t.typeOfGoods} <span>*</span>
               </label>
               <div className="goods-grid">
-                {goodsTypes.map((type) => (
+                {t.goodsTypes.map((type) => (
                   <label key={type} className="choice-card">
                     <input type="radio" name="typeOfGoods" value={type} required />
                     <span>{type}</span>
@@ -218,24 +199,24 @@ export default function QuoteModal() {
 
               <div className="quote-field-grid two-cols details-grid">
                 <label>
-                  Number of Pallets <span>*</span>
-                  <input name="numberOfPallets" type="number" min="0" placeholder="Select pallet quantity" required />
+                  {t.numberOfPallets} <span>*</span>
+                  <input name="numberOfPallets" type="number" min="0" placeholder={t.palletsPlaceholder} required />
                 </label>
                 <label>
-                  Approximate Weight <span>*</span>
-                  <input name="approximateWeight" type="text" placeholder="Enter weight in lbs" required />
+                  {t.approximateWeight} <span>*</span>
+                  <input name="approximateWeight" type="text" placeholder={t.weightPlaceholder} required />
                 </label>
                 <label className="span-two">
-                  Dimensions
-                  <input name="dimensions" type="text" placeholder="L x W x H (inches)" />
+                  {t.dimensions}
+                  <input name="dimensions" type="text" placeholder={t.dimensionsPlaceholder} />
                 </label>
               </div>
             </section>
 
             <section className="quote-panel">
-              <h3><Clock3 size={21} /> Special Requirements</h3>
+              <h3><Clock3 size={21} /> {t.specialRequirements}</h3>
               <div className="requirements-grid">
-                {specialRequirements.map((requirement) => (
+                {t.specialRequirementOptions.map((requirement) => (
                   <label key={requirement}>
                     <input type="checkbox" name="specialRequirements" value={requirement} />
                     {requirement}
@@ -245,10 +226,10 @@ export default function QuoteModal() {
             </section>
 
             <section className="quote-panel notes-panel">
-              <h3><FileText size={21} /> Additional Notes</h3>
+              <h3><FileText size={21} /> {t.additionalNotes}</h3>
               <label>
-                Additional Notes
-                <textarea name="additionalNotes" placeholder="Write your message here..." rows={5} />
+                {t.additionalNotes}
+                <textarea name="additionalNotes" placeholder={t.notesPlaceholder} rows={5} />
               </label>
             </section>
 
@@ -256,9 +237,9 @@ export default function QuoteModal() {
 
             <button className="quote-submit-button" type="submit" disabled={status === "submitting"}>
               <Send size={20} />
-              {status === "submitting" ? "SENDING..." : "Submit Request"}
+              {status === "submitting" ? t.submitting : t.submit}
             </button>
-            <p className="quote-secure">Your information is secure and will only be used to respond to your request.</p>
+            <p className="quote-secure">{t.secureNote}</p>
           </form>
         )}
       </div>

@@ -1,47 +1,67 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Clock3, Globe2, Mail, MapPin, Phone } from "lucide-react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import QuoteModal from "@/components/QuoteModal";
 import ContactForm from "./ContactForm";
+import { localeFromParams } from "@/lib/dictionaries";
+import { pageAlternates } from "@/lib/i18n";
 
-const contactItems = [
-  {
-    icon: Phone,
-    label: "Phone",
-    value: "514-623-5486",
-    href: "tel:5146235486"
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    value: "info@mandyexpress.ca",
-    href: "mailto:info@mandyexpress.ca"
-  },
-  {
-    icon: Globe2,
-    label: "Website",
-    value: "mandyexpress.ca",
-    href: "https://mandyexpress.ca"
-  },
-  {
-    icon: MapPin,
-    label: "Office",
-    value: ["Suite 620, 99 Cameron St", "Toronto, ON M5T 3A2", "Canada"]
-  },
-  {
-    icon: Clock3,
-    label: "Business Hours",
-    value: ["Mon – Fri: 8:00 AM – 6:00 PM", "Sat – Sun: By appointment only"]
-  }
-];
+type PageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-export default function ContactPage() {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale, dict } = await localeFromParams(params);
+
+  return {
+    title: dict.meta.contact.title,
+    description: dict.meta.contact.description,
+    alternates: pageAlternates(locale, "/contact")
+  };
+}
+
+export default async function ContactPage({ params }: PageProps) {
+  const { locale, dict } = await localeFromParams(params);
+  const t = dict.contactPage;
+
+  const contactItems = [
+    {
+      icon: Phone,
+      label: t.phone,
+      value: "514-623-5486",
+      href: "tel:5146235486"
+    },
+    {
+      icon: Mail,
+      label: t.email,
+      value: "info@mandyexpress.ca",
+      href: "mailto:info@mandyexpress.ca"
+    },
+    {
+      icon: Globe2,
+      label: t.website,
+      value: "mandyexpress.ca",
+      href: "https://mandyexpress.ca"
+    },
+    {
+      icon: MapPin,
+      label: t.office,
+      value: t.officeLines
+    },
+    {
+      icon: Clock3,
+      label: t.hours,
+      value: t.hoursLines
+    }
+  ];
+
   return (
     <main className="min-h-screen bg-white text-mandy-navy">
-      <Header activeItem="Contact" />
+      <Header activeItem="contact" />
 
-      <section className="container contact-hero" aria-label="Contact Mandy Express">
+      <section className="container contact-hero" aria-label={t.heroAria}>
         <Image
           src="/images/fleet-hero.png"
           alt=""
@@ -52,16 +72,16 @@ export default function ContactPage() {
         />
         <div className="contact-hero-overlay" />
         <div className="contact-hero-copy">
-          <h1>Contact Us</h1>
-          <p>We&apos;re here to help. Get in touch with our team.</p>
+          <h1>{t.heroTitle}</h1>
+          <p>{t.heroSubtitle}</p>
           <span />
         </div>
       </section>
 
-      <section className="container contact-main-section" aria-label="Contact information and message form">
+      <section className="container contact-main-section" aria-label={t.mainAria}>
         <aside className="contact-info-panel">
           <div className="contact-section-heading">
-            <h2>Contact Information</h2>
+            <h2>{t.infoHeading}</h2>
             <span />
           </div>
 
@@ -99,14 +119,14 @@ export default function ContactPage() {
 
         <section className="contact-form-panel" aria-labelledby="contact-form-heading">
           <div className="contact-section-heading">
-            <h2 id="contact-form-heading">Send Us a Message</h2>
+            <h2 id="contact-form-heading">{t.formHeading}</h2>
             <span />
           </div>
           <ContactForm />
         </section>
       </section>
 
-      <Footer />
+      <Footer locale={locale} />
       <QuoteModal />
     </main>
   );

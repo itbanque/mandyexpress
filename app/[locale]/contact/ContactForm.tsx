@@ -2,23 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import { CheckCircle2, Send } from "lucide-react";
-
-const serviceTypes = [
-  "Same-Day Delivery",
-  "Daily Freight Service",
-  "Door-to-Door Service",
-  "Dedicated Cargo Van",
-  "Moving Service",
-  "Other"
-];
+import { isValidEmail } from "@/lib/api-utils";
+import { useI18n } from "@/components/I18nProvider";
 
 type FormErrors = Partial<Record<"name" | "email" | "message" | "form", string>>;
 
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 export default function ContactForm() {
+  const { locale, dict } = useI18n();
+  const t = dict.contactForm;
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -31,13 +22,13 @@ export default function ContactForm() {
     const message = String(formData.get("message") || "").trim();
     const nextErrors: FormErrors = {};
 
-    if (!name) nextErrors.name = "Please enter your name.";
+    if (!name) nextErrors.name = t.errors.name;
     if (!email) {
-      nextErrors.email = "Please enter your email address.";
+      nextErrors.email = t.errors.emailRequired;
     } else if (!isValidEmail(email)) {
-      nextErrors.email = "Please enter a valid email address.";
+      nextErrors.email = t.errors.emailInvalid;
     }
-    if (!message) nextErrors.message = "Please enter your message.";
+    if (!message) nextErrors.message = t.errors.message;
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
@@ -55,7 +46,7 @@ export default function ContactForm() {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data?.error || "Message could not be sent.");
+        throw new Error(data?.error || t.errors.fallback);
       }
 
       form.reset();
@@ -63,10 +54,7 @@ export default function ContactForm() {
     } catch (error) {
       setStatus("idle");
       setErrors({
-        form:
-          error instanceof Error
-            ? error.message
-            : "We could not send your message. Please call 514-623-5486 or email info@mandyexpress.ca."
+        form: error instanceof Error ? error.message : t.errors.fallback
       });
     }
   };
@@ -75,10 +63,10 @@ export default function ContactForm() {
     return (
       <div className="contact-success" role="status">
         <CheckCircle2 size={54} />
-        <h3>Message Sent</h3>
-        <p>Thank you. We received your message and will respond as soon as possible.</p>
+        <h3>{t.successTitle}</h3>
+        <p>{t.successBody}</p>
         <button type="button" className="quote-button inline-flex" onClick={() => setStatus("idle")}>
-          Send Another Message
+          {t.sendAnother}
         </button>
       </div>
     );
@@ -87,39 +75,40 @@ export default function ContactForm() {
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
       <input type="text" name="companyWebsite" className="quote-honey" tabIndex={-1} autoComplete="off" />
+      <input type="hidden" name="locale" value={locale} />
 
       <div className="contact-form-row two">
         <label>
-          <span>Your Name *</span>
+          <span>{t.nameLabel} *</span>
           <input name="name" type="text" autoComplete="name" aria-invalid={Boolean(errors.name)} />
           {errors.name && <small>{errors.name}</small>}
         </label>
         <label>
-          <span>Email Address *</span>
+          <span>{t.emailLabel} *</span>
           <input name="email" type="email" autoComplete="email" aria-invalid={Boolean(errors.email)} />
           {errors.email && <small>{errors.email}</small>}
         </label>
       </div>
 
       <label>
-        <span>Phone Number</span>
+        <span>{t.phoneLabel}</span>
         <input name="phone" type="tel" autoComplete="tel" />
       </label>
 
       <label>
-        <span>Type of Service</span>
+        <span>{t.serviceLabel}</span>
         <select name="serviceType" defaultValue="">
           <option value="" disabled>
-            Type of Service
+            {t.servicePlaceholder}
           </option>
-          {serviceTypes.map((service) => (
+          {t.serviceTypes.map((service) => (
             <option key={service}>{service}</option>
           ))}
         </select>
       </label>
 
       <label>
-        <span>Your Message *</span>
+        <span>{t.messageLabel} *</span>
         <textarea name="message" rows={7} aria-invalid={Boolean(errors.message)} />
         {errors.message && <small>{errors.message}</small>}
       </label>
@@ -128,7 +117,7 @@ export default function ContactForm() {
 
       <button type="submit" className="contact-submit-button" disabled={status === "submitting"}>
         <Send size={18} />
-        {status === "submitting" ? "Sending..." : "Send Message"}
+        {status === "submitting" ? t.submitting : t.submit}
       </button>
     </form>
   );

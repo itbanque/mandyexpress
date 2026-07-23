@@ -1,12 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 
-export default function RouteMap() {
+import { getDictionary } from "@/lib/dictionaries";
+import type { Locale } from "@/lib/i18n";
+
+export default async function RouteMap({ locale }: { locale: Locale }) {
+  const dict = await getDictionary(locale);
+
   return (
-    <section id="route" className="route-section" aria-label="Highway 401 route from Toronto to Montreal">
+    <section id="route" className="route-section" aria-label={dict.home.routeAria}>
       <div className="container route-shell">
         <img
           src="/images/route-map-complete.png"
-          alt="Our only route, Highway 401, dedicated same-day freight service between Toronto and Montreal"
+          alt={dict.home.routeMapAlt}
           className="route-map-image"
         />
       </div>

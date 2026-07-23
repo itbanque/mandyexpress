@@ -4,24 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { localeHref } from "@/lib/i18n";
+import { useI18n } from "./I18nProvider";
+import LangSwitcher from "./LangSwitcher";
 import QuoteButton from "./QuoteButton";
 
-const navItems = ["Home", "Services", "Fleet", "Route", "About Us", "Contact"];
+const navItems = ["home", "services", "fleet", "route", "about", "contact"] as const;
 
-const navLinks: Record<string, string> = {
-  Home: "/",
-  Services: "/services",
-  Fleet: "/fleet",
-  Route: "/route",
-  "About Us": "/about",
-  Contact: "/contact"
+export type NavKey = (typeof navItems)[number];
+
+const navPaths: Record<NavKey, string> = {
+  home: "/",
+  services: "/services",
+  fleet: "/fleet",
+  route: "/route",
+  about: "/about",
+  contact: "/contact"
 };
 
 type HeaderProps = {
-  activeItem?: string;
+  activeItem?: NavKey;
 };
 
-export default function Header({ activeItem = "Home" }: HeaderProps) {
+export default function Header({ activeItem = "home" }: HeaderProps) {
+  const { locale, dict } = useI18n();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
 
@@ -54,7 +60,7 @@ export default function Header({ activeItem = "Home" }: HeaderProps) {
   return (
     <header ref={headerRef} className="site-header sticky top-0 z-50 bg-white shadow-header">
       <div className="container header-inner">
-        <Link href="/" aria-label="Mandy Express home" className="mobile-logo-link shrink-0">
+        <Link href={localeHref(locale, "/")} aria-label={dict.header.homeAria} className="mobile-logo-link shrink-0">
           <Image
             src="/images/mandy-express-logo.png"
             alt="Mandy Express"
@@ -65,17 +71,19 @@ export default function Header({ activeItem = "Home" }: HeaderProps) {
           />
         </Link>
 
-        <nav className="desktop-nav" aria-label="Primary navigation">
+        <nav className="desktop-nav" aria-label={dict.header.primaryNav}>
           {navItems.map((item) => (
             <Link
-              href={navLinks[item]}
+              href={localeHref(locale, navPaths[item])}
               key={item}
               className={`nav-link ${item === activeItem ? "nav-link-active" : ""}`}
             >
-              {item}
+              {dict.nav[item]}
             </Link>
           ))}
         </nav>
+
+        <LangSwitcher className="lang-switch desktop-lang-switch" />
 
         <QuoteButton className="desktop-quote-button" />
 
@@ -84,7 +92,7 @@ export default function Header({ activeItem = "Home" }: HeaderProps) {
         <button
           type="button"
           className="mobile-menu-button"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={isMenuOpen ? dict.header.closeMenu : dict.header.openMenu}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-navigation"
           onClick={() => setIsMenuOpen((open) => !open)}
@@ -94,17 +102,18 @@ export default function Header({ activeItem = "Home" }: HeaderProps) {
       </div>
 
       {isMenuOpen && (
-        <nav id="mobile-navigation" className="mobile-nav-panel" aria-label="Mobile navigation">
+        <nav id="mobile-navigation" className="mobile-nav-panel" aria-label={dict.header.mobileNav}>
           {navItems.map((item) => (
             <Link
-              href={navLinks[item]}
+              href={localeHref(locale, navPaths[item])}
               key={item}
               className={`mobile-nav-link ${item === activeItem ? "mobile-nav-link-active" : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              {item}
+              {dict.nav[item]}
             </Link>
           ))}
+          <LangSwitcher className="mobile-nav-link mobile-lang-switch" full onNavigate={() => setIsMenuOpen(false)} />
         </nav>
       )}
     </header>

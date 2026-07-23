@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { escapeHtml, isValidEmail, MAX_FIELD_LENGTH, MAX_MESSAGE_LENGTH } from "@/lib/api-utils";
 
-type RateEntry = {
-  count: number;
-  resetAt: number;
-};
+type ApiLocale = "en" | "fr";
 
 type QuotePayload = {
   fullName: string;
@@ -22,13 +21,50 @@ type QuotePayload = {
   specialRequirements: string[];
   additionalNotes: string;
   companyWebsite: string;
+  locale: ApiLocale;
 };
 
-const rateLimit = new Map<string, RateEntry>();
-const windowMs = 10 * 60 * 1000;
-const maxRequests = 4;
-const maxFieldLength = 500;
-const maxNotesLength = 3000;
+const MESSAGES: Record<string, Record<ApiLocale, string>> = {
+  rateLimited: {
+    en: "Too many quote requests. Please try again later.",
+    fr: "Trop de demandes de soumission. Veuillez réessayer plus tard."
+  },
+  invalidRequest: {
+    en: "Invalid request. Please try again.",
+    fr: "Demande invalide. Veuillez réessayer."
+  },
+  invalidEmail: {
+    en: "Please enter a valid email address.",
+    fr: "Veuillez entrer une adresse courriel valide."
+  },
+  tooLong: {
+    en: "One or more fields are too long. Please shorten your request and try again.",
+    fr: "Un ou plusieurs champs sont trop longs. Veuillez raccourcir votre demande et réessayer."
+  },
+  suspicious: {
+    en: "Your request could not be accepted. Please remove links or unusual characters and try again.",
+    fr: "Votre demande n'a pas pu être acceptée. Veuillez retirer les liens ou les caractères inhabituels et réessayer."
+  },
+  notConfigured: {
+    en: "Quote email delivery is not configured yet. Please call 514-623-5486 or email info@mandyexpress.ca.",
+    fr: "L'envoi de soumissions par courriel n'est pas encore configuré. Appelez au 514-623-5486 ou écrivez à info@mandyexpress.ca."
+  },
+  sendFailed: {
+    en: "We could not send your quote request. Please call 514-623-5486 or email info@mandyexpress.ca.",
+    fr: "Nous n'avons pas pu envoyer votre demande de soumission. Appelez au 514-623-5486 ou écrivez à info@mandyexpress.ca."
+  }
+};
+
+const REQUIRED_FIELD_MESSAGES: Array<[keyof QuotePayload, Record<ApiLocale, string>]> = [
+  ["fullName", { en: "Full name is required.", fr: "Le nom complet est requis." }],
+  ["company", { en: "Company is required.", fr: "Le nom de l'entreprise est requis." }],
+  ["phone", { en: "Phone is required.", fr: "Le numéro de téléphone est requis." }],
+  ["email", { en: "Email is required.", fr: "L'adresse courriel est requise." }],
+  ["pickupLocation", { en: "Pick-up location is required.", fr: "Le lieu de cueillette est requis." }],
+  ["deliveryLocation", { en: "Delivery location is required.", fr: "Le lieu de livraison est requis." }]
+];
+
+const isRateLimited = createRateLimiter({ windowMs: 10 * 60 * 1000, maxRequests: 4 });
 const isDevelopment = process.env.NODE_ENV !== "production";
 const duplicateWindowMs = 10 * 60 * 1000;
 const successfulSubmissions = new Map<string, number>();
@@ -80,23 +116,6 @@ function failureResponse(message: string, status: number, developmentMessage?: s
   );
 }
 
-function getClientIp(request: NextRequest) {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
-}
-
-function isRateLimited(ip: string) {
-  const now = Date.now();
-  const current = rateLimit.get(ip);
-
-  if (!current || current.resetAt < now) {
-    rateLimit.set(ip, { count: 1, resetAt: now + windowMs });
-    return false;
-  }
-
-  current.count += 1;
-  return current.count > maxRequests;
-}
-
 function submissionKey(payload: QuotePayload) {
   return [
     payload.fullName,
@@ -146,19 +165,6 @@ function asStringArray(value: unknown) {
   return singleValue ? [singleValue] : [];
 }
 
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
 function formatValue(value: string) {
   return escapeHtml(value || "Not provided").replace(/\n/g, "<br />");
 }
@@ -185,7 +191,74 @@ function section(title: string, rows: Array<[string, string]>) {
   `;
 }
 
+const maxConfirmationValueLength = 80;
+
+function summarizeForConfirmation(value: string) {
+  return value.length > maxConfirmationValueLength
+    ? `${value.slice(0, maxConfirmationValueLength)}…`
+    : value;
+}
+
+const CONFIRMATION_COPY: Record<
+  ApiLocale,
+  {
+    subject: string;
+    heading: string;
+    greeting: string;
+    paragraph1: string;
+    paragraph2: string;
+    summaryHeading: string;
+    pickupLabel: string;
+    deliveryLabel: string;
+    onFileNote: string;
+    contactHeading: string;
+    phoneLabel: string;
+    emailLabel: string;
+    websiteLabel: string;
+    tagline: string;
+  }
+> = {
+  en: {
+    subject: "We Received Your Quote Request — Mandy Express",
+    heading: "We&rsquo;ve Received Your Quote Request",
+    greeting: "Hello,",
+    paragraph1:
+      "Thank you for contacting Mandy Express. We received your quote request and our team will review your shipment details shortly.",
+    paragraph2:
+      "A Mandy Express team member will contact you soon to confirm the details and provide the next steps.",
+    summaryHeading: "Quote Summary",
+    pickupLabel: "Pickup location",
+    deliveryLabel: "Delivery location",
+    onFileNote: "The full details you submitted are on file with our team and will be confirmed with you directly.",
+    contactHeading: "Contact Details",
+    phoneLabel: "Phone:",
+    emailLabel: "Email:",
+    websiteLabel: "Website:",
+    tagline: "More Than Cargo. Your Trust, Our Priority."
+  },
+  fr: {
+    subject: "Nous avons reçu votre demande de soumission — Mandy Express",
+    heading: "Nous avons bien re&ccedil;u votre demande de soumission",
+    greeting: "Bonjour,",
+    paragraph1:
+      "Merci d'avoir contacté Mandy Express. Nous avons reçu votre demande de soumission et notre équipe examinera les détails de votre expédition sous peu.",
+    paragraph2:
+      "Un membre de l'équipe Mandy Express vous contactera bientôt pour confirmer les détails et vous indiquer les prochaines étapes.",
+    summaryHeading: "Résumé de la demande",
+    pickupLabel: "Lieu de cueillette",
+    deliveryLabel: "Lieu de livraison",
+    onFileNote:
+      "Les renseignements complets que vous avez soumis sont conservés par notre équipe et seront confirmés avec vous directement.",
+    contactHeading: "Coordonnées",
+    phoneLabel: "Téléphone :",
+    emailLabel: "Courriel :",
+    websiteLabel: "Site Web :",
+    tagline: "Plus qu'une cargaison. Votre confiance, notre priorité."
+  }
+};
+
 function customerConfirmationHtml(payload: QuotePayload) {
+  const copy = CONFIRMATION_COPY[payload.locale];
   return `
     <div style="margin:0;padding:0;background:#f3f6fa;font-family:Arial,Helvetica,sans-serif;color:#0b2345;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#f3f6fa;">
@@ -195,39 +268,35 @@ function customerConfirmationHtml(payload: QuotePayload) {
               <tr>
                 <td style="padding:24px 28px;background:#0b2345;color:#ffffff;">
                   <p style="margin:0 0 8px;color:#ff6a00;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Mandy Express</p>
-                  <h1 style="margin:0;font-size:28px;line-height:1.2;color:#ffffff;">We&rsquo;ve Received Your Quote Request</h1>
+                  <h1 style="margin:0;font-size:28px;line-height:1.2;color:#ffffff;">${copy.heading}</h1>
                 </td>
               </tr>
               <tr>
                 <td style="padding:28px;">
-                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Hello ${formatValue(payload.fullName)},</p>
-                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Thank you for contacting Mandy Express. We received your quote request and our team will review your shipment details shortly.</p>
-                  <p style="margin:0 0 24px;font-size:16px;line-height:1.6;">A Mandy Express team member will contact you soon to confirm the details and provide the next steps.</p>
+                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">${copy.greeting}</p>
+                  <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">${escapeHtml(copy.paragraph1)}</p>
+                  <p style="margin:0 0 24px;font-size:16px;line-height:1.6;">${escapeHtml(copy.paragraph2)}</p>
 
-                  <h2 style="margin:0 0 12px;color:#ff6a00;font-size:15px;letter-spacing:.04em;text-transform:uppercase;">Quote Summary</h2>
+                  <h2 style="margin:0 0 12px;color:#ff6a00;font-size:15px;letter-spacing:.04em;text-transform:uppercase;">${escapeHtml(copy.summaryHeading)}</h2>
                   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
                     ${tableRows([
-                      ["Pickup location", payload.pickupLocation],
-                      ["Delivery location", payload.deliveryLocation],
-                      ["Pickup date", payload.pickupDate],
-                      ["Required delivery time", payload.requiredDeliveryTime],
-                      ["Type of goods", payload.typeOfGoods],
-                      ["Number of pallets", payload.numberOfPallets],
-                      ["Approximate weight", payload.approximateWeight]
+                      [copy.pickupLabel, summarizeForConfirmation(payload.pickupLocation)],
+                      [copy.deliveryLabel, summarizeForConfirmation(payload.deliveryLocation)]
                     ])}
                   </table>
+                  <p style="margin:12px 0 0;font-size:13px;line-height:1.5;color:#6b7280;">${escapeHtml(copy.onFileNote)}</p>
 
                   <div style="margin:26px 0 0;padding:18px 20px;background:#f8fafc;border-left:4px solid #ff6a00;">
-                    <h2 style="margin:0 0 10px;color:#0b2345;font-size:17px;">Contact Details</h2>
-                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>Phone:</strong> 514-623-5486</p>
-                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>Email:</strong> info@mandyexpress.ca</p>
-                    <p style="margin:0;font-size:15px;line-height:1.5;"><strong>Website:</strong> <a href="https://mandyexpress.ca" style="color:#ff6a00;text-decoration:none;">https://mandyexpress.ca</a></p>
+                    <h2 style="margin:0 0 10px;color:#0b2345;font-size:17px;">${escapeHtml(copy.contactHeading)}</h2>
+                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.phoneLabel)}</strong> 514-623-5486</p>
+                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.emailLabel)}</strong> info@mandyexpress.ca</p>
+                    <p style="margin:0;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.websiteLabel)}</strong> <a href="https://mandyexpress.ca" style="color:#ff6a00;text-decoration:none;">https://mandyexpress.ca</a></p>
                   </div>
                 </td>
               </tr>
               <tr>
                 <td style="padding:18px 28px;background:#0b2345;color:#ffffff;text-align:center;">
-                  <p style="margin:0;color:#ffffff;font-size:14px;">More Than Cargo. Your Trust, Our Priority.</p>
+                  <p style="margin:0;color:#ffffff;font-size:14px;">${escapeHtml(copy.tagline)}</p>
                 </td>
               </tr>
             </table>
@@ -268,27 +337,21 @@ function normalizePayload(body: Record<string, unknown>): QuotePayload {
     dimensions: asString(body.dimensions),
     specialRequirements: asStringArray(body.specialRequirements),
     additionalNotes: asString(body.additionalNotes),
-    companyWebsite: asString(body.companyWebsite)
+    companyWebsite: asString(body.companyWebsite),
+    locale: body.locale === "fr" ? "fr" : "en"
   };
 }
 
 function validatePayload(payload: QuotePayload) {
-  const requiredFields: Array<[keyof QuotePayload, string]> = [
-    ["fullName", "Full name"],
-    ["company", "Company"],
-    ["phone", "Phone"],
-    ["email", "Email"],
-    ["pickupLocation", "Pick-up location"],
-    ["deliveryLocation", "Delivery location"]
-  ];
+  const locale = payload.locale;
 
-  const missingField = requiredFields.find(([key]) => !payload[key]);
+  const missingField = REQUIRED_FIELD_MESSAGES.find(([key]) => !payload[key]);
   if (missingField) {
-    return `${missingField[1]} is required.`;
+    return missingField[1][locale];
   }
 
   if (!isValidEmail(payload.email)) {
-    return "Please enter a valid email address.";
+    return MESSAGES.invalidEmail[locale];
   }
 
   const valuesToCheck = Object.entries(payload).flatMap(([key, value]) => {
@@ -296,12 +359,12 @@ function validatePayload(payload: QuotePayload) {
     return Array.isArray(value) ? value : [value];
   });
 
-  if (valuesToCheck.some((value) => value.length > maxFieldLength) || payload.additionalNotes.length > maxNotesLength) {
-    return "One or more fields are too long. Please shorten your request and try again.";
+  if (valuesToCheck.some((value) => value.length > MAX_FIELD_LENGTH) || payload.additionalNotes.length > MAX_MESSAGE_LENGTH) {
+    return MESSAGES.tooLong[locale];
   }
 
   if (hasSuspiciousContent(payload)) {
-    return "Your request could not be accepted. Please remove links or unusual characters and try again.";
+    return MESSAGES.suspicious[locale];
   }
 
   return "";
@@ -310,23 +373,24 @@ function validatePayload(payload: QuotePayload) {
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
 
-  if (isRateLimited(ip)) {
-    logQuoteFailure("rate limit exceeded", { ip });
-    return failureResponse("Too many quote requests. Please try again later.", 429);
-  }
-
   let body: Record<string, unknown>;
 
   try {
     body = await request.json();
   } catch (error) {
     logQuoteFailure("invalid json", { ip, error: describeError(error) });
-    return failureResponse("Invalid request. Please try again.", 400, errorMessage(error));
+    return failureResponse(MESSAGES.invalidRequest.en, 400, errorMessage(error));
   }
 
   logRequestBody(body);
 
   const payload = normalizePayload(body);
+  const locale = payload.locale;
+
+  if (isRateLimited(ip)) {
+    logQuoteFailure("rate limit exceeded", { ip });
+    return failureResponse(MESSAGES.rateLimited[locale], 429);
+  }
 
   if (payload.companyWebsite) {
     logQuoteFailure("honeypot triggered", { ip, requestBody: body });
@@ -358,7 +422,7 @@ export async function POST(request: NextRequest) {
 
   if (!resendApiKey || !to || !from) {
     return failureResponse(
-      "Quote email delivery is not configured yet. Please call 514-623-5486 or email info@mandyexpress.ca.",
+      MESSAGES.notConfigured[locale],
       503,
       `Missing environment variables: ${missingEnvironmentVariables.join(", ")}`
     );
@@ -428,7 +492,7 @@ export async function POST(request: NextRequest) {
         from,
         to: [payload.email],
         replyTo: "info@mandyexpress.ca",
-        subject: "We Received Your Quote Request — Mandy Express",
+        subject: CONFIRMATION_COPY[locale].subject,
         html: customerHtml
       }
     ]);
@@ -465,7 +529,7 @@ export async function POST(request: NextRequest) {
     });
 
     return failureResponse(
-      "We could not send your quote request. Please call 514-623-5486 or email info@mandyexpress.ca.",
+      MESSAGES.sendFailed[locale],
       502,
       errorMessage(error)
     );

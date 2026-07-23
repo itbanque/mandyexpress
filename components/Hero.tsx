@@ -1,11 +1,15 @@
 import Image from "next/image";
+import { getDictionary } from "@/lib/dictionaries";
+import type { Locale } from "@/lib/i18n";
 
-export default function Hero() {
+export default async function Hero({ locale }: { locale: Locale }) {
+  const dict = await getDictionary(locale);
+
   return (
-    <section className="container hero-section" aria-label="Mandy Express same-day freight delivery">
+    <section className="container hero-section" aria-label={dict.home.heroAria}>
       <Image
         src="/images/hero-large.png"
-        alt="Mandy Express same-day freight delivery from Toronto to Montreal along Highway 401 with a 2025 Mercedes-Benz Sprinter Extended High Roof"
+        alt={dict.home.heroAlt}
         width={2048}
         height={1116}
         priority
