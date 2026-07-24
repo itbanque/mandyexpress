@@ -44,7 +44,7 @@ export const en = {
     fleet: {
       title: "Our Fleet",
       description:
-        "Modern cargo vans with up to 13.5 m³ of cargo space, 3,500 kg payload, and rear and side door access — sized for fast, flexible freight between Montreal and Toronto."
+        "Modern cargo vans with up to 477 cu ft of cargo space, 7,700 lbs payload, and rear and side door access — sized for fast, flexible freight between Montreal and Toronto."
     },
     route: {
       title: "Our Route",
@@ -284,11 +284,11 @@ export const en = {
     vanName: "Sprinter Cargo Van",
     vanText: "Spacious, clean, and equipped to handle your freight with care. Ideal for time-sensitive shipments.",
     specs: [
-      { label: "Cargo Space", value: "Up to 13.5 m³" },
-      { label: "Payload Capacity", value: "Up to 3,500 KG" },
-      { label: "Length", value: "Up to 4.2 m" },
-      { label: "Height", value: "Up to 1.9 m" },
-      { label: "Width", value: "Up to 1.7 m" },
+      { label: "Cargo Space", value: "Up to 477 cu ft" },
+      { label: "Payload Capacity", value: "Up to 7,700 lbs" },
+      { label: "Length", value: "Up to 165 in" },
+      { label: "Height", value: "Up to 75 in" },
+      { label: "Width", value: "Up to 67 in" },
       { label: "Access", value: "Rear & Side Door" }
     ],
     advantagesHeading: "Fleet Advantages",
@@ -363,7 +363,7 @@ export const en = {
       },
       {
         title: "Capacity",
-        lines: ["Dedicated Cargo Van", "Up to 3500 KG"]
+        lines: ["Dedicated Cargo Van", "Up to 7,700 lbs"]
       }
     ]
   },

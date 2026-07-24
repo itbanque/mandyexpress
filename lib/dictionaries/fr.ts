@@ -46,7 +46,7 @@ export const fr: Dictionary = {
     fleet: {
       title: "Notre flotte",
       description:
-        "Fourgons cargo modernes offrant jusqu'à 13,5 m³ d'espace de chargement, 3 500 kg de charge utile et un accès par portes arrière et latérale — pour un fret rapide et flexible entre Montréal et Toronto."
+        "Fourgons cargo modernes offrant jusqu'à 477 pi³ d'espace de chargement, 7 700 lb de charge utile et un accès par portes arrière et latérale — pour un fret rapide et flexible entre Montréal et Toronto."
     },
     route: {
       title: "Notre trajet",
@@ -286,11 +286,11 @@ export const fr: Dictionary = {
     vanName: "Fourgon cargo Sprinter",
     vanText: "Spacieux, propre et équipé pour manipuler votre marchandise avec soin. Idéal pour les envois urgents.",
     specs: [
-      { label: "Espace de chargement", value: "Jusqu'à 13,5 m³" },
-      { label: "Charge utile", value: "Jusqu'à 3 500 kg" },
-      { label: "Longueur", value: "Jusqu'à 4,2 m" },
-      { label: "Hauteur", value: "Jusqu'à 1,9 m" },
-      { label: "Largeur", value: "Jusqu'à 1,7 m" },
+      { label: "Espace de chargement", value: "Jusqu'à 477 pi³" },
+      { label: "Charge utile", value: "Jusqu'à 7 700 lb" },
+      { label: "Longueur", value: "Jusqu'à 165 po" },
+      { label: "Hauteur", value: "Jusqu'à 75 po" },
+      { label: "Largeur", value: "Jusqu'à 67 po" },
       { label: "Accès", value: "Portes arrière et latérale" }
     ],
     advantagesHeading: "Avantages de la flotte",
@@ -365,7 +365,7 @@ export const fr: Dictionary = {
       },
       {
         title: "Capacité",
-        lines: ["Fourgon cargo dédié", "Jusqu'à 3 500 kg"]
+        lines: ["Fourgon cargo dédié", "Jusqu'à 7 700 lb"]
       }
     ]
   },
