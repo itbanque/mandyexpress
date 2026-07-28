@@ -8,10 +8,10 @@ export default async function Hero({ locale }: { locale: Locale }) {
   return (
     <section className="container hero-section" aria-label={dict.home.heroAria}>
       <Image
-        src="/images/hero-large.png"
+        src="/images/hero-large-v2.png"
         alt={dict.home.heroAlt}
-        width={2048}
-        height={1116}
+        width={1380}
+        height={752}
         priority
         className="hero-image"
       />

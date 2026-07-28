@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CalendarDays, Clock3, Handshake, MapPin, Package, Phone, ShieldCheck, Users } from "lucide-react";
+import { Clock3, Handshake, Package, ShieldCheck } from "lucide-react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import QuoteButton from "@/components/QuoteButton";
 import QuoteModal from "@/components/QuoteModal";
 import { localeFromParams } from "@/lib/dictionaries";
 import { pageAlternates } from "@/lib/i18n";
@@ -22,7 +21,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-const highlightIcons = [CalendarDays, ShieldCheck, MapPin, Users];
 const valueIcons = [ShieldCheck, Clock3, Handshake, Package];
 
 export default async function AboutPage({ params }: PageProps) {
@@ -35,7 +33,7 @@ export default async function AboutPage({ params }: PageProps) {
 
       <section className="about-hero" aria-label={t.heroAria}>
         <Image
-          src="/images/fleet-hero.png"
+          src="/images/fleet-hero-v2.png"
           alt={t.heroImageAlt}
           fill
           priority
@@ -57,21 +55,6 @@ export default async function AboutPage({ params }: PageProps) {
       </section>
 
       <div className="about-page-width">
-        <section className="about-highlights" aria-label={t.highlightsAria}>
-          {t.highlights.map((highlight, index) => {
-            const Icon = highlightIcons[index];
-            return (
-              <article className="about-highlight-item" key={highlight.title}>
-                <Icon size={38} strokeWidth={1.9} />
-                <h3>{highlight.title}</h3>
-                {highlight.lines.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </article>
-            );
-          })}
-        </section>
-
         <section className="about-story" aria-labelledby="about-story">
           <div className="story-copy">
             <p className="about-eyebrow eyebrow">{t.storyEyebrow}</p>
@@ -110,19 +93,6 @@ export default async function AboutPage({ params }: PageProps) {
             );
           })}
         </div>
-      </section>
-
-      <section className="container about-bottom-cta" aria-label={t.ctaAria}>
-        <div className="about-bottom-cta-copy">
-          <span className="about-phone-icon">
-            <Phone size={34} />
-          </span>
-          <div>
-            <h2>{t.ctaTitle}</h2>
-            <p>{t.ctaText}</p>
-          </div>
-        </div>
-        <QuoteButton />
       </section>
 
       <Footer locale={locale} />

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import RouteMap from "@/components/RouteMap";
 import Footer from "@/components/Footer";
 import QuoteModal from "@/components/QuoteModal";
 import { localeFromParams } from "@/lib/dictionaries";
@@ -28,7 +27,6 @@ export default async function Home({ params }: PageProps) {
       <Header />
       <Hero locale={locale} />
       <Services locale={locale} />
-      <RouteMap locale={locale} />
       <Footer locale={locale} />
       <QuoteModal />
     </main>

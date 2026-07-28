@@ -2,23 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 import { escapeHtml, isValidEmail, MAX_FIELD_LENGTH, MAX_MESSAGE_LENGTH } from "@/lib/api-utils";
+import { en } from "@/lib/dictionaries/en";
+import { fr } from "@/lib/dictionaries/fr";
+
+// Pick-up / delivery are dropdowns now, so accept only the cities the forms actually offer.
+const ALLOWED_LOCATIONS = new Set<string>([...en.quote.locationOptions, ...fr.quote.locationOptions]);
 
 type ApiLocale = "en" | "fr";
 
 type QuotePayload = {
   fullName: string;
-  company: string;
   phone: string;
   email: string;
   pickupLocation: string;
   deliveryLocation: string;
   pickupDate: string;
   requiredDeliveryTime: string;
-  typeOfGoods: string;
   numberOfPallets: string;
   approximateWeight: string;
   dimensions: string;
-  specialRequirements: string[];
   additionalNotes: string;
   companyWebsite: string;
   locale: ApiLocale;
@@ -37,6 +39,14 @@ const MESSAGES: Record<string, Record<ApiLocale, string>> = {
     en: "Please enter a valid email address.",
     fr: "Veuillez entrer une adresse courriel valide."
   },
+  invalidLocation: {
+    en: "Please select a pick-up and delivery location from the list.",
+    fr: "Veuillez choisir un lieu de cueillette et de livraison dans la liste."
+  },
+  contactRequired: {
+    en: "Please provide a phone number or an email address.",
+    fr: "Veuillez fournir un numéro de téléphone ou une adresse courriel."
+  },
   tooLong: {
     en: "One or more fields are too long. Please shorten your request and try again.",
     fr: "Un ou plusieurs champs sont trop longs. Veuillez raccourcir votre demande et réessayer."
@@ -46,20 +56,17 @@ const MESSAGES: Record<string, Record<ApiLocale, string>> = {
     fr: "Votre demande n'a pas pu être acceptée. Veuillez retirer les liens ou les caractères inhabituels et réessayer."
   },
   notConfigured: {
-    en: "Quote email delivery is not configured yet. Please call 514-623-5486 or email info@mandyexpress.ca.",
-    fr: "L'envoi de soumissions par courriel n'est pas encore configuré. Appelez au 514-623-5486 ou écrivez à info@mandyexpress.ca."
+    en: "Quote email delivery is not configured yet. Please call 438-921-7268 or email info@mandyexpress.ca.",
+    fr: "L'envoi de soumissions par courriel n'est pas encore configuré. Appelez au 438-921-7268 ou écrivez à info@mandyexpress.ca."
   },
   sendFailed: {
-    en: "We could not send your quote request. Please call 514-623-5486 or email info@mandyexpress.ca.",
-    fr: "Nous n'avons pas pu envoyer votre demande de soumission. Appelez au 514-623-5486 ou écrivez à info@mandyexpress.ca."
+    en: "We could not send your quote request. Please call 438-921-7268 or email info@mandyexpress.ca.",
+    fr: "Nous n'avons pas pu envoyer votre demande de soumission. Appelez au 438-921-7268 ou écrivez à info@mandyexpress.ca."
   }
 };
 
 const REQUIRED_FIELD_MESSAGES: Array<[keyof QuotePayload, Record<ApiLocale, string>]> = [
   ["fullName", { en: "Full name is required.", fr: "Le nom complet est requis." }],
-  ["company", { en: "Company is required.", fr: "Le nom de l'entreprise est requis." }],
-  ["phone", { en: "Phone is required.", fr: "Le numéro de téléphone est requis." }],
-  ["email", { en: "Email is required.", fr: "L'adresse courriel est requise." }],
   ["pickupLocation", { en: "Pick-up location is required.", fr: "Le lieu de cueillette est requis." }],
   ["deliveryLocation", { en: "Delivery location is required.", fr: "Le lieu de livraison est requis." }]
 ];
@@ -119,18 +126,15 @@ function failureResponse(message: string, status: number, developmentMessage?: s
 function submissionKey(payload: QuotePayload) {
   return [
     payload.fullName,
-    payload.company,
     payload.phone,
     payload.email,
     payload.pickupLocation,
     payload.deliveryLocation,
     payload.pickupDate,
     payload.requiredDeliveryTime,
-    payload.typeOfGoods,
     payload.numberOfPallets,
     payload.approximateWeight,
     payload.dimensions,
-    payload.specialRequirements.join("|"),
     payload.additionalNotes
   ].join("\u001f");
 }
@@ -154,15 +158,6 @@ function rememberSuccessfulSubmission(key: string) {
 
 function asString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
-}
-
-function asStringArray(value: unknown) {
-  if (Array.isArray(value)) {
-    return value.filter((item): item is string => typeof item === "string").map((item) => item.trim()).filter(Boolean);
-  }
-
-  const singleValue = asString(value);
-  return singleValue ? [singleValue] : [];
 }
 
 function formatValue(value: string) {
@@ -288,7 +283,7 @@ function customerConfirmationHtml(payload: QuotePayload) {
 
                   <div style="margin:26px 0 0;padding:18px 20px;background:#f8fafc;border-left:4px solid #ff6a00;">
                     <h2 style="margin:0 0 10px;color:#0b2345;font-size:17px;">${escapeHtml(copy.contactHeading)}</h2>
-                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.phoneLabel)}</strong> 514-623-5486</p>
+                    <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.phoneLabel)}</strong> 438-921-7268</p>
                     <p style="margin:0 0 6px;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.emailLabel)}</strong> info@mandyexpress.ca</p>
                     <p style="margin:0;font-size:15px;line-height:1.5;"><strong>${escapeHtml(copy.websiteLabel)}</strong> <a href="https://mandyexpress.ca" style="color:#ff6a00;text-decoration:none;">https://mandyexpress.ca</a></p>
                   </div>
@@ -310,7 +305,6 @@ function customerConfirmationHtml(payload: QuotePayload) {
 function hasSuspiciousContent(payload: QuotePayload) {
   const combined = [
     payload.fullName,
-    payload.company,
     payload.phone,
     payload.email,
     payload.pickupLocation,
@@ -324,18 +318,15 @@ function hasSuspiciousContent(payload: QuotePayload) {
 function normalizePayload(body: Record<string, unknown>): QuotePayload {
   return {
     fullName: asString(body.fullName),
-    company: asString(body.company),
     phone: asString(body.phone),
     email: asString(body.email),
     pickupLocation: asString(body.pickupLocation),
     deliveryLocation: asString(body.deliveryLocation),
     pickupDate: asString(body.pickupDate),
     requiredDeliveryTime: asString(body.requiredDeliveryTime),
-    typeOfGoods: asString(body.typeOfGoods),
     numberOfPallets: asString(body.numberOfPallets),
     approximateWeight: asString(body.approximateWeight),
     dimensions: asString(body.dimensions),
-    specialRequirements: asStringArray(body.specialRequirements),
     additionalNotes: asString(body.additionalNotes),
     companyWebsite: asString(body.companyWebsite),
     locale: body.locale === "fr" ? "fr" : "en"
@@ -350,13 +341,22 @@ function validatePayload(payload: QuotePayload) {
     return missingField[1][locale];
   }
 
-  if (!isValidEmail(payload.email)) {
+  // Phone and email are each optional, but at least one is needed to reply to the customer.
+  if (!payload.phone && !payload.email) {
+    return MESSAGES.contactRequired[locale];
+  }
+
+  if (payload.email && !isValidEmail(payload.email)) {
     return MESSAGES.invalidEmail[locale];
+  }
+
+  if (!ALLOWED_LOCATIONS.has(payload.pickupLocation) || !ALLOWED_LOCATIONS.has(payload.deliveryLocation)) {
+    return MESSAGES.invalidLocation[locale];
   }
 
   const valuesToCheck = Object.entries(payload).flatMap(([key, value]) => {
     if (key === "companyWebsite" || key === "additionalNotes") return [];
-    return Array.isArray(value) ? value : [value];
+    return [value];
   });
 
   if (valuesToCheck.some((value) => value.length > MAX_FIELD_LENGTH) || payload.additionalNotes.length > MAX_MESSAGE_LENGTH) {
@@ -443,7 +443,6 @@ export async function POST(request: NextRequest) {
   }).format(new Date());
 
   const companySubject = `New Quote Request — ${payload.fullName} — ${payload.pickupLocation} to ${payload.deliveryLocation}`;
-  const requirements = payload.specialRequirements.length ? payload.specialRequirements.join(", ") : "None selected";
   const companyHtml = `
     <div style="margin:0;padding:24px;background:#f3f6fa;font-family:Arial,sans-serif;color:#1f2937;">
       <div style="max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
@@ -455,23 +454,20 @@ export async function POST(request: NextRequest) {
           <p style="margin:0 0 18px;"><strong>Submitted:</strong> ${escapeHtml(submittedAt)}</p>
           ${section("Customer Information", [
             ["Name", payload.fullName],
-            ["Company", payload.company],
             ["Phone", payload.phone],
             ["Email", payload.email]
           ])}
           ${section("Shipment Information", [
             ["Pickup location", payload.pickupLocation],
             ["Delivery location", payload.deliveryLocation],
-            ["Pickup date", payload.pickupDate],
+            ["Service date", payload.pickupDate],
             ["Required delivery time", payload.requiredDeliveryTime]
           ])}
           ${section("Cargo Details", [
-            ["Type of goods", payload.typeOfGoods],
             ["Number of pallets", payload.numberOfPallets],
             ["Approximate weight", payload.approximateWeight],
             ["Dimensions", payload.dimensions]
           ])}
-          ${section("Special Requirements", [["Selected requirements", requirements]])}
           ${section("Additional Notes", [["Notes", payload.additionalNotes]])}
         </div>
       </div>
@@ -479,23 +475,30 @@ export async function POST(request: NextRequest) {
   `;
   const customerHtml = customerConfirmationHtml(payload);
 
+  // The customer may have left email blank (phone-only request) — in that case there is
+  // nobody to send the confirmation to, and replyTo must be omitted rather than sent empty.
+  const companyEmail = {
+    from,
+    to: [to],
+    subject: companySubject,
+    html: companyHtml,
+    ...(payload.email ? { replyTo: payload.email } : {})
+  };
+  const emailsToSend = payload.email
+    ? [
+        companyEmail,
+        {
+          from,
+          to: [payload.email],
+          replyTo: "info@mandyexpress.ca",
+          subject: CONFIRMATION_COPY[locale].subject,
+          html: customerHtml
+        }
+      ]
+    : [companyEmail];
+
   try {
-    const resendResponse = await resend.batch.send([
-      {
-        from,
-        to: [to],
-        replyTo: payload.email,
-        subject: companySubject,
-        html: companyHtml
-      },
-      {
-        from,
-        to: [payload.email],
-        replyTo: "info@mandyexpress.ca",
-        subject: CONFIRMATION_COPY[locale].subject,
-        html: customerHtml
-      }
-    ]);
+    const resendResponse = await resend.batch.send(emailsToSend);
 
     console.log("[quote-api] Resend batch response", JSON.stringify(resendResponse));
 
@@ -511,7 +514,7 @@ export async function POST(request: NextRequest) {
       });
 
       return failureResponse(
-        "We could not send your quote request. Please call 514-623-5486 or email info@mandyexpress.ca.",
+        "We could not send your quote request. Please call 438-921-7268 or email info@mandyexpress.ca.",
         502,
         errorMessage(error)
       );

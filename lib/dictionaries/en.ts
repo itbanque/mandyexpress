@@ -44,7 +44,7 @@ export const en = {
     fleet: {
       title: "Our Fleet",
       description:
-        "Modern cargo vans with up to 477 cu ft of cargo space, 7,700 lbs payload, and rear and side door access — sized for fast, flexible freight between Montreal and Toronto."
+        "Modern cargo vans with up to 477 cu ft of cargo space, 3,500 lbs payload, and rear and side door access — sized for fast, flexible freight between Montreal and Toronto."
     },
     route: {
       title: "Our Route",
@@ -59,7 +59,7 @@ export const en = {
     contact: {
       title: "Contact Us",
       description:
-        "Request a freight quote or reach the Mandy Express team: call 514-623-5486 or email info@mandyexpress.ca for same-day shipping between Montreal and Toronto."
+        "Request a freight quote or reach the Mandy Express team: call 438-921-7268 or email info@mandyexpress.ca for same-day shipping between Montreal and Toronto."
     }
   },
   home: {
@@ -83,19 +83,13 @@ export const en = {
         title: "401 Corridor Specialists",
         lines: ["One route.", "One focus."]
       }
-    ],
-    routeAria: "Highway 401 route from Toronto to Montreal",
-    routeMapAlt:
-      "Our only route, Highway 401, dedicated same-day freight service between Toronto and Montreal"
+    ]
   },
   footer: {
-    ctaTitle: "Ready to ship today?",
-    ctaLine1: "Let's move your freight.",
-    ctaLine2: "Call, email, or request a quote today.",
     quickLinks: "Quick Links",
     contactUs: "Contact Us",
     tagline: "More Than Cargo. Your Trust, Our Priority.",
-    copyright: "© 2024 Mandy Express Freight Service. All Rights Reserved.",
+    copyright: "© {year} Mandy Express Freight Service. All Rights Reserved.",
     privacy: "Privacy Policy",
     terms: "Terms & Conditions"
   },
@@ -109,20 +103,21 @@ export const en = {
     contactInfo: "Contact Information",
     fullName: "Full Name",
     fullNamePlaceholder: "Your name",
-    company: "Company Name",
-    companyPlaceholder: "Company name",
     phone: "Phone Number",
     phonePlaceholder: "(514) 123-4567",
     email: "Email Address",
     emailPlaceholder: "you@example.com",
+    contactHint: "* Phone or email — please fill in at least one so we can reach you.",
+    contactRequired: "Please provide a phone number or an email address.",
     shipmentInfo: "Shipment Information",
     pickupLocation: "Pick-up Location",
-    pickupLocationPlaceholder: "Enter pick-up address",
+    pickupLocationPlaceholder: "Select city",
     deliveryLocation: "Delivery Location",
-    deliveryLocationPlaceholder: "Enter delivery address",
-    pickupDate: "Pick-up Date",
+    deliveryLocationPlaceholder: "Select city",
+    locationOptions: ["Toronto", "Montreal"],
+    pickupDate: "Service Date",
     requiredDeliveryTime: "Required Delivery Time",
-    deliveryTimePlaceholder: "Select delivery time",
+    deliveryTimePlaceholder: "Select time",
     deliveryTimeOptions: [
       "Same-Day Delivery",
       "Next-Day Delivery",
@@ -131,36 +126,36 @@ export const en = {
       "Afternoon Delivery"
     ],
     additionalDetails: "Additional Details",
-    typeOfGoods: "Type of Goods",
-    goodsTypes: [
-      "Apparel / Garments",
-      "Retail Products",
-      "Samples",
-      "Cartons",
-      "Palletized Freight",
-      "Other"
+    restrictionsHeading: "Fleet Security & Cargo Restrictions",
+    restrictionsIntro:
+      "To guarantee absolute regulatory safety compliance, transport hygiene, and legal parameters across provincial borders, the following categorical bans are strictly enforced:",
+    restrictions: [
+      {
+        title: "No Temperature-Controlled Goods",
+        text: "To safeguard rigorous express line-haul schedules and protect standard asset allocation, we do not support or accept deep-freeze, chilled, or refrigerated items."
+      },
+      {
+        title: "No Hazardous Materials (Hazmat)",
+        text: "Flammable chemical formulations, explosive elements, lithium battery arrays, or volatile industrial compounds are strictly prohibited to ensure custody protection."
+      },
+      {
+        title: "No Live Animals / Sanitary Contraband",
+        text: "Livestock, pets, organic biological items, or legally restricted agricultural commodities are fully barred to guarantee pristine, completely sanitized cargo chambers."
+      }
     ],
     numberOfPallets: "Number of Pallets",
-    palletsPlaceholder: "Select pallet quantity",
+    palletsPlaceholder: "Quantity",
     approximateWeight: "Approximate Weight",
-    weightPlaceholder: "Enter weight in lbs",
+    weightPlaceholder: "Weight in lbs",
     dimensions: "Dimensions",
     dimensionsPlaceholder: "L x W x H (inches)",
-    specialRequirements: "Special Requirements",
-    specialRequirementOptions: [
-      "Liftgate Service",
-      "Inside Delivery",
-      "Residential Delivery",
-      "Limited Access",
-      "Special Handling / Fragile"
-    ],
     additionalNotes: "Additional Notes",
     notesPlaceholder: "Write your message here...",
     submit: "Submit Request",
     submitting: "SENDING...",
     secureNote: "Your information is secure and will only be used to respond to your request.",
     errorFallback:
-      "We could not send the request. Please email info@mandyexpress.ca or call 514-623-5486."
+      "We could not send the request. Please email info@mandyexpress.ca or call 438-921-7268."
   },
   contactPage: {
     heroAria: "Contact Mandy Express",
@@ -198,7 +193,7 @@ export const en = {
       emailInvalid: "Please enter a valid email address.",
       message: "Please enter your message.",
       fallback:
-        "We could not send your message. Please call 514-623-5486 or email info@mandyexpress.ca."
+        "We could not send your message. Please call 438-921-7268 or email info@mandyexpress.ca."
     },
     successTitle: "Message Sent",
     successBody: "Thank you. We received your message and will respond as soon as possible.",
@@ -285,7 +280,7 @@ export const en = {
     vanText: "Spacious, clean, and equipped to handle your freight with care. Ideal for time-sensitive shipments.",
     specs: [
       { label: "Cargo Space", value: "Up to 477 cu ft" },
-      { label: "Payload Capacity", value: "Up to 7,700 lbs" },
+      { label: "Payload Capacity", value: "Up to 3,500 lbs" },
       { label: "Length", value: "Up to 165 in" },
       { label: "Height", value: "Up to 75 in" },
       { label: "Width", value: "Up to 67 in" },
@@ -320,29 +315,7 @@ export const en = {
     montreal: "Montreal",
     heroSubtitle: "Daily Freight Service Along Highway 401",
     corridorHeading: "The 401 Corridor",
-    mapAria: "Static route map from Toronto to Montreal along Highway 401",
-    mapSvgAria: "Toronto to Montreal Highway 401 route",
-    lakeLabel: "LAKE ONTARIO",
-    cities: ["Toronto", "Oshawa", "Belleville", "Kingston", "Cornwall", "Montreal"],
-    highlightsAria: "Route service highlights",
-    highlights: [
-      {
-        title: "Daily Service",
-        lines: ["Montreal to Toronto", "Every Business Day"]
-      },
-      {
-        title: "Same-Day Delivery",
-        lines: ["Fast, reliable and", "on-time delivery"]
-      },
-      {
-        title: "Door-to-Door",
-        lines: ["Direct pickup and delivery", "No terminal transfers"]
-      },
-      {
-        title: "Dedicated Cargo Van",
-        lines: ["One shipment.", "One vehicle. One driver."]
-      }
-    ],
+    mapAria: "Map of the Highway 401 route from Toronto to Montreal",
     detailsHeading: "Route Details",
     details: [
       {
@@ -363,7 +336,7 @@ export const en = {
       },
       {
         title: "Capacity",
-        lines: ["Dedicated Cargo Van", "Up to 7,700 lbs"]
+        lines: ["Dedicated Cargo Van", "Up to 3,500 lbs"]
       }
     ]
   },
@@ -375,25 +348,6 @@ export const en = {
     heroParagraphs: [
       "Mandy Express Freight Service is a Canadian-owned company specializing in daily freight transportation along the Montreal-Toronto corridor.",
       "We are committed to delivering your freight safely, on time, every time. Your business keeps moving, and we make it happen."
-    ],
-    highlightsAria: "Mandy Express company highlights",
-    highlights: [
-      {
-        title: "Daily Service",
-        lines: ["Montreal to Toronto", "Every Business Day"]
-      },
-      {
-        title: "100%",
-        lines: ["On-Time Delivery", "Our Commitment"]
-      },
-      {
-        title: "401 Corridor",
-        lines: ["Specialized Route", "Expertise"]
-      },
-      {
-        title: "Canadian Owned",
-        lines: ["Local Business.", "Personal Service."]
-      }
     ],
     storyEyebrow: "Our Story",
     storyTitleLines: ["BUILT ON RELIABILITY.", "DRIVEN BY COMMITMENT."],
@@ -421,9 +375,6 @@ export const en = {
         lines: ["Your freight is handled", "with care and respect."]
       }
     ],
-    ctaAria: "Move forward together",
-    ctaTitle: "Let's Move Forward Together",
-    ctaText: "Contact us today to experience reliable freight service you can trust."
   }
 };
 
