@@ -24,7 +24,7 @@ export default async function Home({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-white text-mandy-navy">
-      <Header />
+      <Header activeItem="home" />
       <Hero locale={locale} />
       <Services locale={locale} />
       <Footer locale={locale} />

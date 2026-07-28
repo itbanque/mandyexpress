@@ -26,7 +26,7 @@ type HeaderProps = {
   activeItem?: NavKey;
 };
 
-export default function Header({ activeItem = "home" }: HeaderProps) {
+export default function Header({ activeItem }: HeaderProps) {
   const { locale, dict } = useI18n();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
