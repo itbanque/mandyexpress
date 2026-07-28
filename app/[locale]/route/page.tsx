@@ -21,10 +21,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // Google 地图官方 iframe 端点（就是「分享 → 嵌入地图」给的那个），免 API key、免注册。
-// pb 参数里能直接读出起终点，要改路线改这两个地名即可。
-// 结尾的 !3e0 = 只显示驾车路线；不加的话 Google 会同时列出航班和公共交通的时间。
+// pb 参数里的三个地名依次是 起点 / 途经点 / 终点，要改路线改地名即可。
+// 中间的 Kingston 是途经点：不加的话 Google 会同时画出一条绕行的备选路线，
+// 钉住 401 上的一个点之后就只剩这一条。
+// 结尾的 !3e0 = 只显示驾车路线；不加的话还会列出航班和公共交通的时间。
 const CORRIDOR_MAP_SRC =
-  "https://www.google.com/maps/embed?origin=mfe&pb=!1m6!4m5!4m1!2sToronto,ON!4m1!2sMontreal,QC!3e0";
+  "https://www.google.com/maps/embed?origin=mfe&pb=!1m8!4m7!4m1!2sToronto,ON!4m1!2sKingston,ON!4m1!2sMontreal,QC!3e0";
 
 function HighwayShield({ className = "" }: { className?: string }) {
   return (
