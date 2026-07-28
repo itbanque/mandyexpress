@@ -417,3 +417,21 @@ https://www.google.com/maps/embed?origin=mfe&pb=!1m6!4m5!4m1!2sToronto,ON!4m1!2s
 **图片文件 `route-map-complete.png` 保留未删**（另外几张 `route-map-*.png` 也都在），可随时恢复。
 
 **验证**：`npm run build` + `npm run lint` 通过；1440px 实测渲染正常。
+
+---
+
+## Route Details 删除（2026-07-28）
+
+**客户要求**：Distance / Drive Time / Major Stops / Frequency / Capacity 五张卡片删掉。
+
+（原计划 E3 是把这块换成 401 沿线小镇清单，客户改主意直接删了，所以 Q8「沿线小镇要列哪些」这个问题也随之作废。）
+
+**已删**：
+- `app/[locale]/route/page.tsx` 里整个 `<section className="container route-details-section">`、`detailIcons` 数组，以及至此已全部无用的 lucide 图标 import（整行 import 都去掉了）。
+- 字典 `routePage.detailsHeading` + `routePage.details`（en + fr）。
+- CSS `.route-details-section` / `.route-details-grid` / `.route-detail-column` / `.route-column-divider` 全部规则（基础 + ≤1279px + ≤767px 三处）。
+- `.route-section-heading` **保留** —— 地图那一节还在用。
+
+**Route 页现在的结构**：Toronto ↔ 401 ↔ Montreal 标题 → 真实地图 → 页脚。页面变得相当精简，只剩一屏多一点。
+
+**验证**：`npm run build` + `npm run lint` 通过；1440px 实测渲染正常，无残留空白区块。
