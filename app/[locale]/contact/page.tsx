@@ -30,8 +30,8 @@ export default async function ContactPage({ params }: PageProps) {
     {
       icon: Phone,
       label: t.phone,
-      value: "514-623-5486",
-      href: "tel:5146235486"
+      value: "438-921-7268",
+      href: "tel:4389217268"
     },
     {
       icon: Mail,
@@ -63,10 +63,10 @@ export default async function ContactPage({ params }: PageProps) {
 
       <section className="container contact-hero" aria-label={t.heroAria}>
         <Image
-          src="/images/fleet-hero.png"
+          src="/images/fleet-hero-v2.png"
           alt=""
-          width={1500}
-          height={540}
+          width={1380}
+          height={497}
           priority
           className="contact-hero-image"
         />

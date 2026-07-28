@@ -52,10 +52,10 @@ export default async function ServicesPage({ params }: PageProps) {
 
       <section className="container services-page-hero" aria-label={t.heroAria}>
         <Image
-          src="/images/hero-large.png"
+          src="/images/hero-large-v2-clean.png"
           alt={t.heroImageAlt}
-          width={2048}
-          height={1116}
+          width={1380}
+          height={752}
           priority
           className="services-hero-image"
         />

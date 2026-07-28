@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { CheckCircle2, Clock3, FileText, MapPin, Package, Send, User, X } from "lucide-react";
+import { Ban, CheckCircle2, FileText, MapPin, Package, Send, ShieldAlert, User, X } from "lucide-react";
 import { useI18n } from "./I18nProvider";
 
 export default function QuoteModal() {
@@ -45,27 +45,31 @@ export default function QuoteModal() {
     event.preventDefault();
     if (status === "submitting") return;
 
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const getValue = (name: string) => String(formData.get(name) || "").trim();
+
+    // Phone and email are each optional on their own, but one of them must be there.
+    if (!getValue("phone") && !getValue("email")) {
+      setStatus("error");
+      setErrorMessage(t.contactRequired);
+      return;
+    }
+
     setStatus("submitting");
     setErrorMessage("");
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const getValue = (name: string) => String(formData.get(name) || "");
-
     const payload = {
       fullName: getValue("fullName"),
-      company: getValue("company"),
       phone: getValue("phone"),
       email: getValue("email"),
       pickupLocation: getValue("pickupLocation"),
       deliveryLocation: getValue("deliveryLocation"),
       pickupDate: getValue("pickupDate"),
       requiredDeliveryTime: getValue("requiredDeliveryTime"),
-      typeOfGoods: getValue("typeOfGoods"),
       numberOfPallets: getValue("numberOfPallets"),
       approximateWeight: getValue("approximateWeight"),
       dimensions: getValue("dimensions"),
-      specialRequirements: formData.getAll("specialRequirements").map(String),
       additionalNotes: getValue("additionalNotes"),
       companyWebsite: getValue("companyWebsite"),
       locale
@@ -136,24 +140,21 @@ export default function QuoteModal() {
 
             <section className="quote-panel">
               <h3><User size={21} /> {t.contactInfo}</h3>
-              <div className="quote-field-grid two-cols">
+              <div className="quote-field-grid">
                 <label>
                   {t.fullName} <span>*</span>
                   <input name="fullName" type="text" placeholder={t.fullNamePlaceholder} required />
                 </label>
                 <label>
-                  {t.company} <span>*</span>
-                  <input name="company" type="text" placeholder={t.companyPlaceholder} required />
+                  {t.phone}
+                  <input name="phone" type="tel" placeholder={t.phonePlaceholder} />
                 </label>
                 <label>
-                  {t.phone} <span>*</span>
-                  <input name="phone" type="tel" placeholder={t.phonePlaceholder} required />
-                </label>
-                <label>
-                  {t.email} <span>*</span>
-                  <input name="email" type="email" placeholder={t.emailPlaceholder} required />
+                  {t.email}
+                  <input name="email" type="email" placeholder={t.emailPlaceholder} />
                 </label>
               </div>
+              <p className="contact-hint">{t.contactHint}</p>
             </section>
 
             <section className="quote-panel">
@@ -161,11 +162,21 @@ export default function QuoteModal() {
               <div className="quote-field-grid two-cols">
                 <label>
                   {t.pickupLocation} <span>*</span>
-                  <input name="pickupLocation" type="text" placeholder={t.pickupLocationPlaceholder} required />
+                  <select name="pickupLocation" required defaultValue="">
+                    <option value="">{t.pickupLocationPlaceholder}</option>
+                    {t.locationOptions.map((option) => (
+                      <option key={option}>{option}</option>
+                    ))}
+                  </select>
                 </label>
                 <label>
                   {t.deliveryLocation} <span>*</span>
-                  <input name="deliveryLocation" type="text" placeholder={t.deliveryLocationPlaceholder} required />
+                  <select name="deliveryLocation" required defaultValue="">
+                    <option value="">{t.deliveryLocationPlaceholder}</option>
+                    {t.locationOptions.map((option) => (
+                      <option key={option}>{option}</option>
+                    ))}
+                  </select>
                 </label>
                 <label>
                   {t.pickupDate} <span>*</span>
@@ -185,18 +196,6 @@ export default function QuoteModal() {
 
             <section className="quote-panel">
               <h3><Package size={21} /> {t.additionalDetails}</h3>
-              <label className="quote-full-label">
-                {t.typeOfGoods} <span>*</span>
-              </label>
-              <div className="goods-grid">
-                {t.goodsTypes.map((type) => (
-                  <label key={type} className="choice-card">
-                    <input type="radio" name="typeOfGoods" value={type} required />
-                    <span>{type}</span>
-                  </label>
-                ))}
-              </div>
-
               <div className="quote-field-grid two-cols details-grid">
                 <label>
                   {t.numberOfPallets} <span>*</span>
@@ -213,16 +212,20 @@ export default function QuoteModal() {
               </div>
             </section>
 
-            <section className="quote-panel">
-              <h3><Clock3 size={21} /> {t.specialRequirements}</h3>
-              <div className="requirements-grid">
-                {t.specialRequirementOptions.map((requirement) => (
-                  <label key={requirement}>
-                    <input type="checkbox" name="specialRequirements" value={requirement} />
-                    {requirement}
-                  </label>
+            <section className="quote-panel restrictions-panel">
+              <h3><ShieldAlert size={21} /> {t.restrictionsHeading}</h3>
+              <p className="restrictions-intro">{t.restrictionsIntro}</p>
+              <ul className="restrictions-list">
+                {t.restrictions.map((restriction) => (
+                  <li key={restriction.title}>
+                    <Ban size={18} aria-hidden="true" />
+                    <div>
+                      <strong>{restriction.title}</strong>
+                      <p>{restriction.text}</p>
+                    </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </section>
 
             <section className="quote-panel notes-panel">

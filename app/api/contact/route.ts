@@ -25,12 +25,12 @@ const MESSAGES: Record<string, Record<ApiLocale, string>> = {
     fr: "Un ou plusieurs champs sont trop longs. Veuillez raccourcir votre message et réessayer."
   },
   notConfigured: {
-    en: "Email delivery is not configured yet. Please call 514-623-5486 or email info@mandyexpress.ca directly.",
-    fr: "L'envoi de courriels n'est pas encore configuré. Appelez au 514-623-5486 ou écrivez directement à info@mandyexpress.ca."
+    en: "Email delivery is not configured yet. Please call 438-921-7268 or email info@mandyexpress.ca directly.",
+    fr: "L'envoi de courriels n'est pas encore configuré. Appelez au 438-921-7268 ou écrivez directement à info@mandyexpress.ca."
   },
   sendFailed: {
-    en: "We could not send your message. Please call 514-623-5486 or email info@mandyexpress.ca.",
-    fr: "Nous n'avons pas pu envoyer votre message. Appelez au 514-623-5486 ou écrivez à info@mandyexpress.ca."
+    en: "We could not send your message. Please call 438-921-7268 or email info@mandyexpress.ca.",
+    fr: "Nous n'avons pas pu envoyer votre message. Appelez au 438-921-7268 ou écrivez à info@mandyexpress.ca."
   }
 };
 

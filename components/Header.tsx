@@ -64,10 +64,10 @@ export default function Header({ activeItem = "home" }: HeaderProps) {
           <Image
             src="/images/mandy-express-logo.png"
             alt="Mandy Express"
-            width={236}
-            height={90}
+            width={288}
+            height={109}
             priority
-            className="header-logo h-auto w-[205px] md:w-[236px]"
+            className="header-logo h-auto w-[246px] md:w-[288px]"
           />
         </Link>
 

@@ -40,9 +40,9 @@ export async function generateMetadata({ params }: LayoutParams): Promise<Metada
       url: "./",
       images: [
         {
-          url: "/images/hero-large.png",
-          width: 2048,
-          height: 1116,
+          url: "/images/hero-large-v2.png",
+          width: 1380,
+          height: 752,
           alt: meta.ogImageAlt
         }
       ]

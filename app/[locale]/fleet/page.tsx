@@ -57,10 +57,10 @@ export default async function FleetPage({ params }: PageProps) {
         </div>
         <div className="fleet-hero-visual">
           <Image
-            src="/images/fleet-hero.png"
+            src="/images/fleet-hero-v2.png"
             alt={t.heroImageAlt}
-            width={1500}
-            height={540}
+            width={1380}
+            height={497}
             priority
             className="fleet-hero-image"
           />
@@ -76,10 +76,10 @@ export default async function FleetPage({ params }: PageProps) {
         <article className="fleet-van-card">
           <div className="fleet-van-image-panel">
             <Image
-              src="/images/fleet-cargo-van.png"
+              src="/images/fleet-cargo-van-v2.png"
               alt={t.vanImageAlt}
-              width={1100}
-              height={620}
+              width={914}
+              height={643}
               className="fleet-van-image"
             />
           </div>

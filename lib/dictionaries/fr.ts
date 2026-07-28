@@ -46,7 +46,7 @@ export const fr: Dictionary = {
     fleet: {
       title: "Notre flotte",
       description:
-        "Fourgons cargo modernes offrant jusqu'à 477 pi³ d'espace de chargement, 7 700 lb de charge utile et un accès par portes arrière et latérale — pour un fret rapide et flexible entre Montréal et Toronto."
+        "Fourgons cargo modernes offrant jusqu'à 477 pi³ d'espace de chargement, 3 500 lb de charge utile et un accès par portes arrière et latérale — pour un fret rapide et flexible entre Montréal et Toronto."
     },
     route: {
       title: "Notre trajet",
@@ -61,7 +61,7 @@ export const fr: Dictionary = {
     contact: {
       title: "Nous joindre",
       description:
-        "Demandez une soumission ou joignez l'équipe Mandy Express : appelez le 514-623-5486 ou écrivez à info@mandyexpress.ca pour une expédition le jour même entre Montréal et Toronto."
+        "Demandez une soumission ou joignez l'équipe Mandy Express : appelez le 438-921-7268 ou écrivez à info@mandyexpress.ca pour une expédition le jour même entre Montréal et Toronto."
     }
   },
   home: {
@@ -85,19 +85,13 @@ export const fr: Dictionary = {
         title: "Spécialistes du corridor 401",
         lines: ["Un seul trajet.", "Une seule priorité."]
       }
-    ],
-    routeAria: "Trajet de l'autoroute 401 entre Toronto et Montréal",
-    routeMapAlt:
-      "Notre seul trajet, l'autoroute 401 : service de fret dédié le jour même entre Toronto et Montréal"
+    ]
   },
   footer: {
-    ctaTitle: "Prêt à expédier aujourd'hui?",
-    ctaLine1: "Confiez-nous votre marchandise.",
-    ctaLine2: "Appelez-nous, écrivez-nous ou demandez une soumission dès aujourd'hui.",
     quickLinks: "Liens rapides",
     contactUs: "Nous joindre",
     tagline: "Plus qu'une cargaison. Votre confiance, notre priorité.",
-    copyright: "© 2024 Mandy Express Freight Service. Tous droits réservés.",
+    copyright: "© {year} Mandy Express Freight Service. Tous droits réservés.",
     privacy: "Politique de confidentialité",
     terms: "Conditions générales"
   },
@@ -111,20 +105,21 @@ export const fr: Dictionary = {
     contactInfo: "Coordonnées",
     fullName: "Nom complet",
     fullNamePlaceholder: "Votre nom",
-    company: "Nom de l'entreprise",
-    companyPlaceholder: "Nom de l'entreprise",
     phone: "Numéro de téléphone",
     phonePlaceholder: "(514) 123-4567",
     email: "Adresse courriel",
     emailPlaceholder: "vous@exemple.com",
+    contactHint: "* Téléphone ou courriel — veuillez en remplir au moins un pour que nous puissions vous joindre.",
+    contactRequired: "Veuillez fournir un numéro de téléphone ou une adresse courriel.",
     shipmentInfo: "Renseignements sur l'expédition",
     pickupLocation: "Lieu de cueillette",
-    pickupLocationPlaceholder: "Adresse de cueillette",
+    pickupLocationPlaceholder: "Choisir la ville",
     deliveryLocation: "Lieu de livraison",
-    deliveryLocationPlaceholder: "Adresse de livraison",
-    pickupDate: "Date de cueillette",
+    deliveryLocationPlaceholder: "Choisir la ville",
+    locationOptions: ["Toronto", "Montréal"],
+    pickupDate: "Date de service",
     requiredDeliveryTime: "Délai de livraison requis",
-    deliveryTimePlaceholder: "Choisir le délai de livraison",
+    deliveryTimePlaceholder: "Choisir le délai",
     deliveryTimeOptions: [
       "Livraison le jour même",
       "Livraison le lendemain",
@@ -133,36 +128,36 @@ export const fr: Dictionary = {
       "Livraison en après-midi"
     ],
     additionalDetails: "Détails supplémentaires",
-    typeOfGoods: "Type de marchandises",
-    goodsTypes: [
-      "Vêtements",
-      "Produits de détail",
-      "Échantillons",
-      "Cartons",
-      "Marchandise palettisée",
-      "Autre"
+    restrictionsHeading: "Sécurité de la flotte et marchandises refusées",
+    restrictionsIntro:
+      "Afin de garantir une conformité réglementaire absolue, l'hygiène du transport et le respect du cadre légal interprovincial, les interdictions suivantes sont strictement appliquées :",
+    restrictions: [
+      {
+        title: "Aucune marchandise à température contrôlée",
+        text: "Afin de protéger la rigueur de nos horaires de transport express et l'affectation normale de nos véhicules, nous n'acceptons aucun produit surgelé, réfrigéré ou tempéré."
+      },
+      {
+        title: "Aucune matière dangereuse (Hazmat)",
+        text: "Les préparations chimiques inflammables, les matières explosives, les blocs de piles au lithium et les composés industriels volatils sont strictement interdits afin d'assurer la protection de la marchandise."
+      },
+      {
+        title: "Aucun animal vivant ni produit sanitaire interdit",
+        text: "Le bétail, les animaux de compagnie, les matières biologiques organiques et les produits agricoles légalement restreints sont entièrement refusés afin de garantir des espaces de chargement parfaitement salubres."
+      }
     ],
     numberOfPallets: "Nombre de palettes",
-    palletsPlaceholder: "Nombre de palettes",
+    palletsPlaceholder: "Quantité",
     approximateWeight: "Poids approximatif",
     weightPlaceholder: "Poids en lb",
     dimensions: "Dimensions",
     dimensionsPlaceholder: "L x l x H (pouces)",
-    specialRequirements: "Exigences particulières",
-    specialRequirementOptions: [
-      "Hayon élévateur",
-      "Livraison à l'intérieur",
-      "Livraison résidentielle",
-      "Accès limité",
-      "Manutention spéciale / Fragile"
-    ],
     additionalNotes: "Remarques supplémentaires",
     notesPlaceholder: "Écrivez votre message ici...",
     submit: "Envoyer la demande",
     submitting: "ENVOI...",
     secureNote: "Vos renseignements sont protégés et ne seront utilisés que pour répondre à votre demande.",
     errorFallback:
-      "Nous n'avons pas pu envoyer votre demande. Écrivez à info@mandyexpress.ca ou appelez au 514-623-5486."
+      "Nous n'avons pas pu envoyer votre demande. Écrivez à info@mandyexpress.ca ou appelez au 438-921-7268."
   },
   contactPage: {
     heroAria: "Joindre Mandy Express",
@@ -200,7 +195,7 @@ export const fr: Dictionary = {
       emailInvalid: "Veuillez entrer une adresse courriel valide.",
       message: "Veuillez entrer votre message.",
       fallback:
-        "Nous n'avons pas pu envoyer votre message. Appelez au 514-623-5486 ou écrivez à info@mandyexpress.ca."
+        "Nous n'avons pas pu envoyer votre message. Appelez au 438-921-7268 ou écrivez à info@mandyexpress.ca."
     },
     successTitle: "Message envoyé",
     successBody: "Merci. Nous avons bien reçu votre message et vous répondrons dès que possible.",
@@ -287,7 +282,7 @@ export const fr: Dictionary = {
     vanText: "Spacieux, propre et équipé pour manipuler votre marchandise avec soin. Idéal pour les envois urgents.",
     specs: [
       { label: "Espace de chargement", value: "Jusqu'à 477 pi³" },
-      { label: "Charge utile", value: "Jusqu'à 7 700 lb" },
+      { label: "Charge utile", value: "Jusqu'à 3 500 lb" },
       { label: "Longueur", value: "Jusqu'à 165 po" },
       { label: "Hauteur", value: "Jusqu'à 75 po" },
       { label: "Largeur", value: "Jusqu'à 67 po" },
@@ -323,28 +318,6 @@ export const fr: Dictionary = {
     heroSubtitle: "Service de fret quotidien par l'autoroute 401",
     corridorHeading: "Le corridor de la 401",
     mapAria: "Carte du trajet entre Toronto et Montréal par l'autoroute 401",
-    mapSvgAria: "Trajet de l'autoroute 401 entre Toronto et Montréal",
-    lakeLabel: "LAC ONTARIO",
-    cities: ["Toronto", "Oshawa", "Belleville", "Kingston", "Cornwall", "Montréal"],
-    highlightsAria: "Points forts du service",
-    highlights: [
-      {
-        title: "Service quotidien",
-        lines: ["De Montréal à Toronto", "Chaque jour ouvrable"]
-      },
-      {
-        title: "Livraison le jour même",
-        lines: ["Livraison rapide, fiable", "et à temps"]
-      },
-      {
-        title: "Porte-à-porte",
-        lines: ["Cueillette et livraison directes", "Aucun transfert en terminal"]
-      },
-      {
-        title: "Fourgon cargo dédié",
-        lines: ["Une expédition.", "Un véhicule. Un chauffeur."]
-      }
-    ],
     detailsHeading: "Détails du trajet",
     details: [
       {
@@ -365,7 +338,7 @@ export const fr: Dictionary = {
       },
       {
         title: "Capacité",
-        lines: ["Fourgon cargo dédié", "Jusqu'à 7 700 lb"]
+        lines: ["Fourgon cargo dédié", "Jusqu'à 3 500 lb"]
       }
     ]
   },
@@ -377,25 +350,6 @@ export const fr: Dictionary = {
     heroParagraphs: [
       "Mandy Express Freight Service est une entreprise canadienne spécialisée dans le transport quotidien de marchandises le long du corridor Montréal-Toronto.",
       "Nous nous engageons à livrer votre marchandise en toute sécurité, à temps, chaque fois. Vos affaires continuent d'avancer, et nous y veillons."
-    ],
-    highlightsAria: "Points forts de l'entreprise Mandy Express",
-    highlights: [
-      {
-        title: "Service quotidien",
-        lines: ["De Montréal à Toronto", "Chaque jour ouvrable"]
-      },
-      {
-        title: "100 %",
-        lines: ["Livraison à temps", "Notre engagement"]
-      },
-      {
-        title: "Corridor 401",
-        lines: ["Un trajet spécialisé", "Notre expertise"]
-      },
-      {
-        title: "Entreprise canadienne",
-        lines: ["Entreprise locale.", "Service personnalisé."]
-      }
     ],
     storyEyebrow: "Notre histoire",
     storyTitleLines: ["BÂTIE SUR LA FIABILITÉ.", "PORTÉE PAR L'ENGAGEMENT."],
@@ -423,8 +377,5 @@ export const fr: Dictionary = {
         lines: ["Votre marchandise est traitée", "avec soin et respect."]
       }
     ],
-    ctaAria: "Avançons ensemble",
-    ctaTitle: "Avançons ensemble",
-    ctaText: "Communiquez avec nous dès aujourd'hui pour un service de fret fiable, digne de votre confiance."
   }
 };
