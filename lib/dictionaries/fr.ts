@@ -318,29 +318,9 @@ export const fr: Dictionary = {
     heroSubtitle: "Service de fret quotidien par l'autoroute 401",
     corridorHeading: "Le corridor de la 401",
     mapAria: "Carte du trajet entre Toronto et Montréal par l'autoroute 401",
-    detailsHeading: "Détails du trajet",
-    details: [
-      {
-        title: "Distance",
-        lines: ["Environ 545 km"]
-      },
-      {
-        title: "Temps de route",
-        lines: ["Environ 5,5 à 6,5 heures"]
-      },
-      {
-        title: "Arrêts principaux",
-        lines: ["Cornwall, Kingston,", "Belleville, Oshawa"]
-      },
-      {
-        title: "Fréquence",
-        lines: ["Tous les jours (lun - ven)", "Service le samedi sur demande"]
-      },
-      {
-        title: "Capacité",
-        lines: ["Fourgon cargo dédié", "Jusqu'à 3 500 lb"]
-      }
-    ]
+    coverageNote:
+      "Nous desservons toutes les villes situées le long du corridor entre Montréal et Toronto.",
+    coverageSoon: "D'autres villes à venir."
   },
   aboutPage: {
     heroAria: "À propos de Mandy Express",

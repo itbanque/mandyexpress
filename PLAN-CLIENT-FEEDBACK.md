@@ -342,7 +342,7 @@
 
 **换成**：Google 地图官方 iframe 嵌入（「分享 → 嵌入地图」用的那个 `/maps/embed` 端点）
 ```
-https://www.google.com/maps/embed?origin=mfe&pb=!1m6!4m5!4m1!2sToronto,ON!4m1!2sMontreal,QC!3e0
+https://www.google.com/maps/embed?origin=mfe&pb=!1m8!4m7!4m1!2sToronto,ON!4m1!2sKingston,ON!4m1!2sMontreal,QC!3e0
 ```
 - **免 API key、免注册、零成本** —— 不是 Google Maps Platform 那套要开通计费的 API。
 - 给起终点，Google 自动画出实际行车路线，也就是 401；地图上直接显示 **547 km / 5 hr 30 min**，401/407/404 路牌、Kingston / Cornwall / Ottawa 等沿线地名都是真实地图数据。
@@ -417,3 +417,43 @@ https://www.google.com/maps/embed?origin=mfe&pb=!1m6!4m5!4m1!2sToronto,ON!4m1!2s
 **图片文件 `route-map-complete.png` 保留未删**（另外几张 `route-map-*.png` 也都在），可随时恢复。
 
 **验证**：`npm run build` + `npm run lint` 通过；1440px 实测渲染正常。
+
+---
+
+## Route Details 删除（2026-07-28）
+
+**客户要求**：Distance / Drive Time / Major Stops / Frequency / Capacity 五张卡片删掉。
+
+（原计划 E3 是把这块换成 401 沿线小镇清单，客户改主意直接删了，所以 Q8「沿线小镇要列哪些」这个问题也随之作废。）
+
+**已删**：
+- `app/[locale]/route/page.tsx` 里整个 `<section className="container route-details-section">`、`detailIcons` 数组，以及至此已全部无用的 lucide 图标 import（整行 import 都去掉了）。
+- 字典 `routePage.detailsHeading` + `routePage.details`（en + fr）。
+- CSS `.route-details-section` / `.route-details-grid` / `.route-detail-column` / `.route-column-divider` 全部规则（基础 + ≤1279px + ≤767px 三处）。
+- `.route-section-heading` **保留** —— 地图那一节还在用。
+
+**Route 页现在的结构**：Toronto ↔ 401 ↔ Montreal 标题 → 真实地图 → 页脚。页面变得相当精简，只剩一屏多一点。
+
+**验证**：`npm run build` + `npm run lint` 通过；1440px 实测渲染正常，无残留空白区块。
+
+**补：地图下方加服务范围说明（2026-07-28）**
+
+客户指定文案：「Montreal 到多伦多之间沿线所有小镇，其他城市敬请期待」，样式自由发挥。
+
+- 新增字典键 `routePage.coverageNote` / `coverageSoon`：
+  - en: "We serve every town along the corridor between Montreal and Toronto." / "More cities coming soon."
+  - fr: "Nous desservons toutes les villes situées le long du corridor entre Montréal et Toronto." / "D'autres villes à venir."
+- 样式 `.route-coverage`：地图下方居中，最宽 720px。主句深蓝 18px 加粗；「敬请期待」另起一行，用品牌橙 + Impact 大写，做次级信息，和站内其他强调文字一致。移动端字号收到 16/15px。
+- 是**一句声明**而不是列小镇清单 —— 客户明确说「文案就是这个」。
+
+**补：只保留 401 这一条路线（2026-07-28）**
+
+加了 `!3e0` 之后虽然没有航班/公交了，但 Google 仍会画出**两条驾车路线** —— 主线 546 km 走 401，另一条 598 km 绕行。客户要求只显示 401。
+
+修法：在 `pb` 里插入一个**途经点 Kingston, ON**（401 沿线中点），把路线钉死：
+```
+!1m8!4m7!4m1!2sToronto,ON!4m1!2sKingston,ON!4m1!2sMontreal,QC!3e0
+```
+计数相应从 `!1m6!4m5` 改成 `!1m8!4m7`（每加一个地名，两个计数各 +2）。
+
+结果：只剩一条紫线，553 km / 5 hr 48 min，地图上还顺带标出了 Kingston 这个途经城市。距离比原来多 7 km，因为途经点把路线拉进了 Kingston 市区而非走 401 绕城段 —— 可以接受。

@@ -316,29 +316,8 @@ export const en = {
     heroSubtitle: "Daily Freight Service Along Highway 401",
     corridorHeading: "The 401 Corridor",
     mapAria: "Map of the Highway 401 route from Toronto to Montreal",
-    detailsHeading: "Route Details",
-    details: [
-      {
-        title: "Distance",
-        lines: ["Approx. 545 KM"]
-      },
-      {
-        title: "Drive Time",
-        lines: ["Approx. 5.5 - 6.5 Hours"]
-      },
-      {
-        title: "Major Stops",
-        lines: ["Cornwall, Kingston,", "Belleville, Oshawa"]
-      },
-      {
-        title: "Frequency",
-        lines: ["Daily (Mon - Fri)", "Saturday Service Available"]
-      },
-      {
-        title: "Capacity",
-        lines: ["Dedicated Cargo Van", "Up to 3,500 lbs"]
-      }
-    ]
+    coverageNote: "We serve every town along the corridor between Montreal and Toronto.",
+    coverageSoon: "More cities coming soon."
   },
   aboutPage: {
     heroAria: "About Mandy Express",
