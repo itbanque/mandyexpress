@@ -435,3 +435,13 @@ https://www.google.com/maps/embed?origin=mfe&pb=!1m6!4m5!4m1!2sToronto,ON!4m1!2s
 **Route 页现在的结构**：Toronto ↔ 401 ↔ Montreal 标题 → 真实地图 → 页脚。页面变得相当精简，只剩一屏多一点。
 
 **验证**：`npm run build` + `npm run lint` 通过；1440px 实测渲染正常，无残留空白区块。
+
+**补：地图下方加服务范围说明（2026-07-28）**
+
+客户指定文案：「Montreal 到多伦多之间沿线所有小镇，其他城市敬请期待」，样式自由发挥。
+
+- 新增字典键 `routePage.coverageNote` / `coverageSoon`：
+  - en: "We serve every town along the corridor between Montreal and Toronto." / "More cities coming soon."
+  - fr: "Nous desservons toutes les villes situées le long du corridor entre Montréal et Toronto." / "D'autres villes à venir."
+- 样式 `.route-coverage`：地图下方居中，最宽 720px。主句深蓝 18px 加粗；「敬请期待」另起一行，用品牌橙 + Impact 大写，做次级信息，和站内其他强调文字一致。移动端字号收到 16/15px。
+- 是**一句声明**而不是列小镇清单 —— 客户明确说「文案就是这个」。

@@ -317,7 +317,10 @@ export const fr: Dictionary = {
     montreal: "Montréal",
     heroSubtitle: "Service de fret quotidien par l'autoroute 401",
     corridorHeading: "Le corridor de la 401",
-    mapAria: "Carte du trajet entre Toronto et Montréal par l'autoroute 401"
+    mapAria: "Carte du trajet entre Toronto et Montréal par l'autoroute 401",
+    coverageNote:
+      "Nous desservons toutes les villes situées le long du corridor entre Montréal et Toronto.",
+    coverageSoon: "D'autres villes à venir."
   },
   aboutPage: {
     heroAria: "À propos de Mandy Express",

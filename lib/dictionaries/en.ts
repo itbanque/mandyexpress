@@ -315,7 +315,9 @@ export const en = {
     montreal: "Montreal",
     heroSubtitle: "Daily Freight Service Along Highway 401",
     corridorHeading: "The 401 Corridor",
-    mapAria: "Map of the Highway 401 route from Toronto to Montreal"
+    mapAria: "Map of the Highway 401 route from Toronto to Montreal",
+    coverageNote: "We serve every town along the corridor between Montreal and Toronto.",
+    coverageSoon: "More cities coming soon."
   },
   aboutPage: {
     heroAria: "About Mandy Express",

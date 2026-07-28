@@ -76,6 +76,10 @@ export default async function RoutePage({ params }: PageProps) {
             allowFullScreen
           />
         </div>
+        <p className="route-coverage">
+          {t.coverageNote}
+          <span>{t.coverageSoon}</span>
+        </p>
       </section>
 
       <Footer locale={locale} />
