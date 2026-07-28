@@ -54,9 +54,9 @@ export default async function Footer({ locale }: { locale: Locale }) {
             <a href="https://mandyexpress.ca" className="footer-list-contact"><Globe2 size={18} />mandyexpress.ca</a>
           </div>
           <div className="footer-legal">
-            <Link href="#privacy" className="hover:text-mandy-orange">{footer.privacy}</Link>
+            <Link href={localeHref(locale, "/privacy")} className="hover:text-mandy-orange">{footer.privacy}</Link>
             <span className="text-white/35">|</span>
-            <Link href="#terms" className="hover:text-mandy-orange">{footer.terms}</Link>
+            <Link href={localeHref(locale, "/terms")} className="hover:text-mandy-orange">{footer.terms}</Link>
           </div>
         </div>
       </div>

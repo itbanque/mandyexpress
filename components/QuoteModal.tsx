@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Ban, CheckCircle2, FileText, MapPin, Package, Send, ShieldAlert, User, X } from "lucide-react";
+import { Ban, CheckCircle2, FileText, MapPin, Package, Ruler, Send, ShieldAlert, User, X } from "lucide-react";
 import { useI18n } from "./I18nProvider";
 
 export default function QuoteModal() {
@@ -69,7 +69,6 @@ export default function QuoteModal() {
       requiredDeliveryTime: getValue("requiredDeliveryTime"),
       numberOfPallets: getValue("numberOfPallets"),
       approximateWeight: getValue("approximateWeight"),
-      dimensions: getValue("dimensions"),
       additionalNotes: getValue("additionalNotes"),
       companyWebsite: getValue("companyWebsite"),
       locale
@@ -196,6 +195,10 @@ export default function QuoteModal() {
 
             <section className="quote-panel">
               <h3><Package size={21} /> {t.additionalDetails}</h3>
+              <p className="quote-pallet-note">
+                <Ruler size={17} aria-hidden="true" />
+                {t.palletSizeNote}
+              </p>
               <div className="quote-field-grid two-cols details-grid">
                 <label>
                   {t.numberOfPallets} <span>*</span>
@@ -204,10 +207,6 @@ export default function QuoteModal() {
                 <label>
                   {t.approximateWeight} <span>*</span>
                   <input name="approximateWeight" type="text" placeholder={t.weightPlaceholder} required />
-                </label>
-                <label className="span-two">
-                  {t.dimensions}
-                  <input name="dimensions" type="text" placeholder={t.dimensionsPlaceholder} />
                 </label>
               </div>
             </section>

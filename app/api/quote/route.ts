@@ -10,6 +10,10 @@ const ALLOWED_LOCATIONS = new Set<string>([...en.quote.locationOptions, ...fr.qu
 
 type ApiLocale = "en" | "fr";
 
+// The quote form no longer collects dimensions — every shipment is quoted on the
+// standard pallet, so the size is stated on the form and repeated in the email.
+const PALLET_SIZE = "48 x 40 x 63 in (L x W x H)";
+
 type QuotePayload = {
   fullName: string;
   phone: string;
@@ -20,7 +24,6 @@ type QuotePayload = {
   requiredDeliveryTime: string;
   numberOfPallets: string;
   approximateWeight: string;
-  dimensions: string;
   additionalNotes: string;
   companyWebsite: string;
   locale: ApiLocale;
@@ -134,7 +137,6 @@ function submissionKey(payload: QuotePayload) {
     payload.requiredDeliveryTime,
     payload.numberOfPallets,
     payload.approximateWeight,
-    payload.dimensions,
     payload.additionalNotes
   ].join("\u001f");
 }
@@ -326,7 +328,6 @@ function normalizePayload(body: Record<string, unknown>): QuotePayload {
     requiredDeliveryTime: asString(body.requiredDeliveryTime),
     numberOfPallets: asString(body.numberOfPallets),
     approximateWeight: asString(body.approximateWeight),
-    dimensions: asString(body.dimensions),
     additionalNotes: asString(body.additionalNotes),
     companyWebsite: asString(body.companyWebsite),
     locale: body.locale === "fr" ? "fr" : "en"
@@ -466,7 +467,7 @@ export async function POST(request: NextRequest) {
           ${section("Cargo Details", [
             ["Number of pallets", payload.numberOfPallets],
             ["Approximate weight", payload.approximateWeight],
-            ["Dimensions", payload.dimensions]
+            ["Pallet size", PALLET_SIZE]
           ])}
           ${section("Additional Notes", [["Notes", payload.additionalNotes]])}
         </div>
