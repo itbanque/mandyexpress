@@ -177,15 +177,132 @@ canvas {
   display: none;
 }
 
+/* Home hero: live text over a text-free photo. Sizes use cqw (percent of the
+   hero's width) so the layout scales like the original baked-in artwork. */
+/* No overflow: hidden here: it would cap the box at its aspect ratio and clip
+   longer copy (French, or fallback fonts where Impact is missing). */
 .hero-section {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 1380 / 752;
   background: #061b36;
+  color: #ffffff;
 }
 
 .hero-image {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+
+/* Darkens the left of the photo so the copy stays readable over the sunset. */
+.hero-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 27, 54, 0.6) 0%,
+    rgba(6, 27, 54, 0.35) 38%,
+    rgba(6, 27, 54, 0) 58%
+  );
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  max-width: 48%;
+  padding-left: 4%;
+}
+
+.hero-copy h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.hero-title,
+.hero-tagline p {
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: 7.6cqw;
+  line-height: 1;
+}
+
+.hero-title-accent {
+  margin-top: 0.15em;
+  color: var(--orange);
+  font-size: 5.3cqw;
+}
+
+.hero-rule {
+  display: block;
+  width: 7cqw;
+  height: max(3px, 0.3cqw);
+  margin: 2.4cqw 0 2.2cqw;
+  background: var(--orange);
+}
+
+.hero-route {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 3.2cqw;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.hero-route-arrow {
+  color: var(--orange);
+}
+
+.hero-corridor {
+  margin: 0.8cqw 0 0;
+  color: var(--orange);
+  font-size: 2.6cqw;
+  line-height: 1.2;
+}
+
+.hero-tagline {
+  display: flex;
+  align-items: center;
+  gap: 2.2cqw;
+  margin-top: 5cqw;
+}
+
+.hero-tagline-icon {
+  flex: none;
+  width: 6.4cqw;
+  height: 6.4cqw;
+  color: var(--orange);
+}
+
+.hero-tagline p {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-size: 2.4cqw;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+
+.hero-tagline em {
+  color: var(--orange);
+  font-style: normal;
 }
 
 .services-grid {
@@ -1762,6 +1879,67 @@ not grid: the label text and its "*" must stay on one line together. */
 
   .header-logo {
     width: clamp(180px, 45vw, 228px) !important;
+  }
+
+  /* Portrait: copy sits in the sky at the top, the van shows underneath it. */
+  .hero-section {
+    aspect-ratio: auto;
+  }
+
+  .hero-image {
+    object-position: 80% bottom;
+  }
+
+  .hero-section::after {
+    background: linear-gradient(
+      180deg,
+      rgba(6, 27, 54, 0.85) 0%,
+      rgba(6, 27, 54, 0.7) 50%,
+      rgba(6, 27, 54, 0) 78%
+    );
+  }
+
+  .hero-copy {
+    max-width: none;
+    height: auto;
+    padding: 36px 24px 290px;
+  }
+
+  .hero-title {
+    font-size: clamp(40px, 13vw, 60px);
+  }
+
+  .hero-title-accent {
+    font-size: clamp(28px, 8.6vw, 40px);
+  }
+
+  .hero-rule {
+    width: 52px;
+    height: 4px;
+    margin: 18px 0 16px;
+  }
+
+  .hero-route {
+    font-size: 22px;
+  }
+
+  .hero-corridor {
+    margin-top: 6px;
+    font-size: 17px;
+  }
+
+  .hero-tagline {
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .hero-tagline-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .hero-tagline p {
+    font-size: 17px;
   }
 
   .quote-button.mobile-header-quote {

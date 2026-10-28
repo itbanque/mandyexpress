@@ -409,6 +409,15 @@ export const en = {
     heroAria: "Mandy Express same-day freight delivery",
     heroAlt:
       "Mandy Express same-day freight delivery from Toronto to Montreal along Highway 401 with a 2025 Mercedes-Benz Sprinter Extended High Roof",
+    heroTitleLines: ["Same-Day", "Freight Delivery"],
+    heroFrom: "Toronto",
+    heroTo: "Montreal",
+    heroCorridor: "Along Highway 401",
+    // Each line is [plain, orange accent].
+    heroTagline: [
+      ["Pick up", "today."],
+      ["Deliver", "today."]
+    ],
     services: [
       {
         title: "Same-Day Delivery",

@@ -78,6 +78,14 @@ export const fr: Dictionary = {
     heroAria: "Livraison de fret le jour même Mandy Express",
     heroAlt:
       "Livraison de fret le jour même Mandy Express de Toronto à Montréal par l'autoroute 401 avec un Mercedes-Benz Sprinter 2025 à toit surélevé allongé",
+    heroTitleLines: ["Livraison", "de fret le jour même"],
+    heroFrom: "Toronto",
+    heroTo: "Montréal",
+    heroCorridor: "Par l'autoroute 401",
+    heroTagline: [
+      ["Cueillette", "aujourd'hui."],
+      ["Livraison", "aujourd'hui."]
+    ],
     services: [
       {
         title: "Livraison le jour même",
